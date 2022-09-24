@@ -4,7 +4,7 @@ export interface Thumbnail {
     url: string;
 }
 
-export interface Product {
+export interface ProductInterface {
     _id: string;
     trademark: string;
     name: string;
