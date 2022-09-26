@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faUser, faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { Container, Grid, ImageListItem } from "@mui/material";
 import { Link } from "react-router-dom";
-import "scss/header.scss";
+import "./header.scss";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 

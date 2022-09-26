@@ -17,7 +17,6 @@ export const loginUser = createAsyncThunk<
 >("users/login", async (userData, { rejectWithValue }) => {
     try {
         const response = await authApi.login(userData);
-        console.log(userData);
         return response.data;
     } catch (err) {
         let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>; // cast the error for access

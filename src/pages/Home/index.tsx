@@ -9,6 +9,7 @@ const Home: FC = () => {
     const [loading, setLoading] = useState(false);
     const { entities } = useSelector((state: RootState) => state.auth);
 
+
     const dispatch = useAppDispatch();
 
     const dataLogin: DataLogin = {
@@ -30,7 +31,7 @@ const Home: FC = () => {
                 <div>Loading....</div>
             ) : (
                 entities?.map((user: User) => (
-                    <div>
+                    <div key={user.email}>
                         <ul>
                             <li>Họ và tên: {`${user.surname} ${user.name}`}</li>
                             <li>Email: {`${user.email}`}</li>
