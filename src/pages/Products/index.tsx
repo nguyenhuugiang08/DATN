@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ProductInterface } from "../../interfaces/interface";
+import { Product } from "../../interfaces/interface";
 import { getAllProducts } from "../../redux/productSlice";
 import { RootState, useAppDispatch } from "../../redux/store";
 
-const Product: React.FC = () => {
+const Products: React.FC = () => {
     const { products } = useSelector((state: RootState) => state.product);
     const dispatch = useAppDispatch();
 
@@ -15,7 +15,7 @@ const Product: React.FC = () => {
     return (
         <div>
             Product
-            {products?.map((product: ProductInterface) => (
+            {products?.map((product: Product) => (
                 <div key={product._id}>
                     <ul>
                         <li>id: {`${product._id}`}</li>
@@ -45,4 +45,4 @@ const Product: React.FC = () => {
     );
 };
 
-export default Product;
+export default Products;

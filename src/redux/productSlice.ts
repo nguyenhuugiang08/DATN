@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ProductInterface } from "../interfaces/interface";
+import { Product } from "../interfaces/interface";
 import type { AxiosError } from "axios";
 import productApi from "../api/productApi";
 
@@ -8,10 +8,10 @@ interface ValidationErrors {
     field_errors: Record<string, string>;
 }
 
-export const getAllProducts = createAsyncThunk<ProductInterface[]>("product/getAll", async () => {
+export const getAllProducts = createAsyncThunk<Product[]>("product/getAll", async () => {
     try {
         const response = await productApi.getAllProduct();
-        return response.data?.products;
+        return response.data?.listProducts;
     } catch (err) {
         let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
         if (!error.response) {
@@ -39,13 +39,13 @@ export const getProductById = createAsyncThunk(
 
 interface ProductState {
     error: string | null | undefined;
-    products: ProductInterface[];
-    product: ProductInterface;
+    products: Product[];
+    product: Product;
 }
 
 const initialState = {
     products: [],
-    product: {} as ProductInterface,
+    product: {} as Product,
     error: null,
 } as ProductState;
 

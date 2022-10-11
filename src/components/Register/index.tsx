@@ -1,5 +1,5 @@
 import { Button, Container, Grid } from "@mui/material";
-import CustomField from "customs/CustomFieled";
+import InputField from "customs/InputField";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { FastField, Form, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
@@ -66,35 +66,35 @@ const Register: React.FC = () => {
                                     <Form>
                                         <FastField
                                             name={"surname"}
-                                            component={CustomField}
+                                            component={InputField}
                                             label={"Họ"}
                                             placeholder={"Họ"}
                                         />
 
                                         <FastField
                                             name={"name"}
-                                            component={CustomField}
+                                            component={InputField}
                                             label={"Tên"}
                                             placeholder={"Tên"}
                                         />
 
                                         <FastField
                                             name={"phone"}
-                                            component={CustomField}
+                                            component={InputField}
                                             label={"Số điện thoại"}
                                             placeholder={"Số điện thoại"}
                                         />
 
                                         <FastField
                                             name={"email"}
-                                            component={CustomField}
+                                            component={InputField}
                                             label={"Email"}
                                             placeholder={"Email"}
                                         />
 
                                         <FastField
                                             name={"password"}
-                                            component={CustomField}
+                                            component={InputField}
                                             type={"password"}
                                             label={"Mật khẩu"}
                                             placeholder={"Mật khẩu"}

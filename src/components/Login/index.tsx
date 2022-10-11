@@ -1,5 +1,4 @@
 import { Formik, Form, FastField } from "formik";
-import CustomField from "customs/CustomFieled";
 import { Button, Container, Grid } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import "./login.scss";
@@ -7,6 +6,8 @@ import { useAppDispatch } from "redux/store";
 import { loginUser } from "redux/authSlice";
 import * as yup from "yup";
 import { unwrapResult } from "@reduxjs/toolkit";
+import InputField from "customs/InputField";
+import { User } from "interfaces/interface";
 
 const Login: React.FC = () => {
     const initialValues = {
@@ -55,21 +56,26 @@ const Login: React.FC = () => {
                             onSubmit={async (values) => {
                                 const result = await dispatch(loginUser(values));
                                 unwrapResult(result);
-                                navigate("/");
+                                const user: User = result.payload as User;
+                                if(user?.role === "admin") {
+                                    navigate("/admin");
+                                }else {
+                                    navigate("/");
+                                }
                             }}
                         >
                             {(formikProps) => (
                                 <Form>
                                     <FastField
                                         name={"email"}
-                                        component={CustomField}
+                                        component={InputField}
                                         label={"Email"}
                                         placeholder={"Enter your email..."}
                                     />
 
                                     <FastField
                                         name={"password"}
-                                        component={CustomField}
+                                        component={InputField}
                                         type={"password"}
                                         label={"Mật khẩu"}
                                         placeholder={"Enter your password..."}

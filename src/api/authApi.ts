@@ -22,6 +22,10 @@ const authApi = {
         const url = "/auth/register";
         return axiosClient.post(url, data);
     },
+    refreshToken: () => {
+        const url = `${process.env.REACT_APP_API_URL}/auth/refresh`;
+        return axiosClient.post(url);
+    }
 };
 
 export default authApi;

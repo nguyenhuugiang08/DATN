@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "../interfaces/interface";
 import type { AxiosError } from "axios";
 import authApi from "../api/authApi";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ValidationErrors {
     errorMessage: string;
@@ -16,7 +18,16 @@ export const loginUser = createAsyncThunk<
     }
 >("users/login", async (userData, { rejectWithValue }) => {
     try {
-        const response = await authApi.login(userData);
+        const response = await toast.promise(authApi.login(userData), {
+            pending: "Đang xử lý",
+            success: "Đăng nhập thành công",
+            error: {
+                render({ data }) {
+                    const { response } = data;
+                    return `Đăng nhập thất bại ${response.data?.message}`;
+                },
+            },
+        });
         return response.data;
     } catch (err) {
         let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>; // cast the error for access
@@ -40,10 +51,14 @@ const initialState = {
 const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {},
+    reducers: {
+        loginSuccess: (state, action) => {
+            state.entities = [action.payload];
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(loginUser.fulfilled, (state, { payload }) => {
-            state.entities.push(payload);
+            state.entities = [payload];
         });
         builder.addCase(loginUser.rejected, (state, action) => {
             if (action.payload) {
@@ -55,4 +70,5 @@ const authSlice = createSlice({
     },
 });
 
+export const { loginSuccess } = authSlice.actions;
 export default authSlice.reducer;

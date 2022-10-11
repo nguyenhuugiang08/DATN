@@ -4,7 +4,7 @@ export interface Thumbnail {
     url: string;
 }
 
-export interface ProductInterface {
+export interface Product {
     _id: string;
     trademark: string;
     name: string;
@@ -28,4 +28,18 @@ export interface User {
     accessToken: string;
     createdAt?: string;
     updatedAt?: string;
+}
+
+export interface Alias {
+    _id: string;
+    name: string;
+    deleted: boolean;
+}
+
+export interface Category {
+    _id: string;
+    name: string;
+    aliasId: string;
+    deleted: boolean;
+    aliasName?: string;
 }
