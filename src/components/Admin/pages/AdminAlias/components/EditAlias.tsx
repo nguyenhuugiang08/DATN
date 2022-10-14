@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Typography, Grid, Button } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Box, Typography, Grid, Button, Theme } from "@mui/material";
+import { createStyles, makeStyles } from "@mui/styles";
 import { FastField, Form, Formik } from "formik";
 import * as yup from "yup";
 import InputFieldDefaultValue from "customs/InputFieldDefaultValue";
@@ -13,7 +13,7 @@ import Roadmap from "components/Admin/components/Roadmap";
 import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
     containerAddBox: {
         height: "67px",
         margin: "0 -20px 10px",
@@ -53,7 +53,7 @@ const useStyles = makeStyles({
         marginTop: "10px",
         marginBottom: "35px",
     },
-});
+}));
 
 const EditAlias = () => {
     const { id } = useParams();

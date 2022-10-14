@@ -54,7 +54,7 @@ const useStyles = makeStyles({
     },
 });
 
-const CreateAlias = () => {
+const CreateAlias: React.FC = () => {
     const navigate = useNavigate();
 
     const classes = useStyles();

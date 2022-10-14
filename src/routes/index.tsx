@@ -60,6 +60,7 @@ const RouterApp: React.FC = () => {
                 {
                     path: "register",
                     element: <Register />,
+                    
                 },
                 {
                     path: "forgot-password",

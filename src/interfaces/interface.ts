@@ -1,21 +1,22 @@
 export interface Thumbnail {
-    _id: string;
-    urlId: string;
+    _id?: string;
+    urlId?: string;
     url: string;
 }
 
 export interface Product {
-    _id: string;
+    _id?: string;
     trademark: string;
     name: string;
-    price: number;
+    price: string;
     sizes: string[];
     description: string;
     colors: string[];
-    discount: number;
-    quantity: number;
+    discount: string;
+    quantity: string;
     thumbnails: Thumbnail[];
-    categoryId: string;
+    categoryName?: string;
+    categoryId?: string;
 }
 
 export interface User {

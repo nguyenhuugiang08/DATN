@@ -1,16 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-    Box,
-    Typography,
-    Grid,
-    Button,
-    FormGroup,
-    FormControlLabel,
-    Checkbox,
-} from "@mui/material";
+import { Box, Typography, Grid, Button, TextField } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { FastField, Field, Form, Formik } from "formik";
+import { FastField, Form, Formik } from "formik";
 import * as yup from "yup";
 import InputFieldDefaultValue from "customs/InputFieldDefaultValue";
 import CheckIcon from "@mui/icons-material/Check";
@@ -22,10 +14,13 @@ import { useSelector } from "react-redux";
 import productApi from "api/productApi";
 import SelectFieldDefaultValue from "customs/SelectFieldDefaultValue";
 import { getAllCategory } from "redux/categorySlice";
-import { pink } from "@mui/material/colors";
 import MessageIcon from "@mui/icons-material/Message";
 import TextareaField from "customs/TextareaField";
 import CheckboxField from "customs/CheckboxField";
+import FilterIcon from "@mui/icons-material/Filter";
+import UploadFileField from "customs/UploadFileField";
+import { Thumbnail } from "interfaces/interface";
+import { getFileFromUrl } from "utilities/getFileFromUrl";
 
 const useStyles = makeStyles({
     containerAddBox: {
@@ -80,7 +75,7 @@ const EditProduct = () => {
         description: "",
         discount: "",
         quantity: "",
-        thumbnails: [],
+        thumbnails: [] as Thumbnail[],
         colors: [] as string[],
         categoryName: "",
     });
@@ -123,6 +118,7 @@ const EditProduct = () => {
                     description: response.data?.description,
                     quantity: response.data?.quantity,
                     sizes: response.data?.sizes,
+                    thumbnails: response.data?.thumbnails,
                 });
             } catch (error) {
                 console.log(error);
@@ -139,11 +135,11 @@ const EditProduct = () => {
         trademark: "",
         name: "",
         price: "",
-        // sizes: [],
+        sizes: [] as string[],
         description: "",
         discount: "",
         quantity: "",
-        // files: [],
+        thumbnails: [] as Thumbnail[],
         colors: [],
         categoryName: "",
     };
@@ -168,15 +164,19 @@ const EditProduct = () => {
                 },
             }),
         price: yup.string().required("Vui lòng nhập trường này"),
-        // sizes: yup.array().of(yup.string().required("Vui lòng chọn size cho product")),
-        // description: yup.string().required("Vui lòng nhập trường này"),
+        sizes: yup
+            .array()
+            .of(yup.string().required())
+            .min(1, "Vui lòng chọn size cho product")
+            .nullable(),
+        description: yup.string().required("Vui lòng nhập trường này"),
         quantity: yup.string().required("Vui lòng nhập trường này"),
         discount: yup.string(),
-        // files: yup.mixed().test("fileSize", "The file is too large", (value) => {
+        // thumbnails: yup.mixed().test("fileSize", "The file is too large", (value) => {
         //     if (!value.length) return true; // attachment is optional
         //     return value[0].size <= 2000000;
         // }),
-        colors: yup.array().of(yup.string().required("Vui lòng chọn ít nhất 1 màu")),
+        colors: yup.array().of(yup.string()).min(1, "Vui lòng chọn ít nhất 1 màu"),
         categoryName: yup.string().required("Vui lòng chọn category cho product"),
     });
 
@@ -202,30 +202,44 @@ const EditProduct = () => {
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             onSubmit={async (values) => {
-                                // const newValues = { id, ...values };
-                                // const updateCategory = async () => {
-                                //     try {
-                                //         await categoryApi.updateCategory(newValues);
-                                //     } catch (error) {
-                                //         console.log(error);
-                                //     }
-                                // };
-
-                                // toast
-                                //     .promise(updateCategory, {
-                                //         pending: "Đang chờ xử lý",
-                                //         success: "Cập nhật category thành công",
-                                //         error: {
-                                //             render({ data }) {
-                                //                 const { response } = data;
-                                //                 return `Cập nhật thất bại ${response.data?.message}`;
-                                //             },
-                                //         },
-                                //     })
-                                //     .then(() => {
-                                //         navigate("/admin/categories");
-                                //     });
                                 console.log(values);
+                                const formData = new FormData();
+                                for (let thumbnail of values.thumbnails) {
+                                    const file = await getFileFromUrl(thumbnail.url, "example.jpg");
+                                    formData.append("thumbnails", file);
+                                }
+                                formData.append("trademark", values.trademark);
+                                formData.append("name", values.name);
+                                formData.append("categoryName", values.categoryName);
+                                formData.append("description", values.description);
+                                formData.append("discount", values.discount);
+                                formData.append("price", values.price);
+                                formData.append("quantity", values.quantity);
+                                values.colors?.forEach((color) => formData.append("colors", color));
+                                values.sizes?.forEach((size) => formData.append("sizes", size));
+
+                                const updateProduct = async () => {
+                                    try {
+                                        await productApi.updateProduct({ id, formData });
+                                    } catch (error) {
+                                        console.log(error);
+                                    }
+                                };
+
+                                toast
+                                    .promise(updateProduct, {
+                                        pending: "Đang chờ xử lý",
+                                        success: "Cập nhật product thành công",
+                                        error: {
+                                            render({ data }) {
+                                                const { response } = data;
+                                                return `Cập nhật thất bại ${response.data?.message}`;
+                                            },
+                                        },
+                                    })
+                                    .then(() => {
+                                        navigate("/admin/products");
+                                    });
                             }}
                         >
                             {(formikProps) => (
@@ -262,30 +276,16 @@ const EditProduct = () => {
                                                 />
                                             </Grid>
                                         )}
-                                        {/* {sizes && (
+                                        {sizes.length > 0 && (
                                             <Grid item xs={12} md={6}>
-                                                <label className='login-form-label'>Sizes</label>
-                                                <FormGroup row>
-                                                    {listSizes.map((size, index) => (
-                                                        <FormControlLabel
-                                                            key={index}
-                                                            control={
-                                                                <Checkbox
-                                                                    checked={sizes.includes(size)}
-                                                                    sx={{
-                                                                        color: pink[800],
-                                                                        "&.Mui-checked": {
-                                                                            color: pink[400],
-                                                                        },
-                                                                    }}
-                                                                />
-                                                            }
-                                                            label={size}
-                                                        />
-                                                    ))}
-                                                </FormGroup>
+                                                <FastField
+                                                    name='sizes'
+                                                    component={CheckboxField}
+                                                    currentValue={sizes}
+                                                    listValues={listSizes}
+                                                />
                                             </Grid>
-                                        )} */}
+                                        )}
                                         {price && (
                                             <Grid item xs={12} md={6}>
                                                 <FastField
@@ -350,6 +350,29 @@ const EditProduct = () => {
                                             />
                                         </Grid>
                                     )}
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        className={classes.headingAddAlias}
+                                        sx={{ marginTop: "80px" }}
+                                    >
+                                        <FilterIcon
+                                            fontSize='small'
+                                            className={classes.positionIcon}
+                                        />{" "}
+                                        upload image
+                                        <Box className={classes.line}></Box>
+                                    </Grid>
+                                    {thumbnails.length > 0 && (
+                                        <Grid item xs={12}>
+                                            <FastField
+                                                name='thumbnails'
+                                                component={UploadFileField}
+                                                currentValue={thumbnails}
+                                            />
+                                        </Grid>
+                                    )}
+
                                     <Button
                                         type='submit'
                                         variant='contained'
