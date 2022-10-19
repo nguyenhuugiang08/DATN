@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { makeStyles } from "@mui/styles";
 import { getAllProducts } from "redux/productSlice";
 import productApi from "api/productApi";
+import useAxios from "hooks/useAxios";
 
 const useStyles = makeStyles({
     containerBox: {
@@ -66,6 +67,7 @@ const AdminCategory = () => {
     const navigate = useNavigate();
 
     const classes = useStyles();
+    const axiosRefresh = useAxios();
 
     const columns: GridColDef[] = [
         {
@@ -100,9 +102,9 @@ const AdminCategory = () => {
             field: "action",
             headerName: "Action",
             sortable: false,
-            width: 200,
+            width: 180,
             renderCell: (params) => {
-                const onClickEditCategory = (
+                const onClickEditProduct = (
                     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
                 ) => {
                     e.stopPropagation();
@@ -129,8 +131,6 @@ const AdminCategory = () => {
                         .filter((c) => c.field !== "__check__" && !!c)
                         .forEach((c) => (thisRow[c.field] = params.getValue(params.id, c.field)));
                     
-                    console.log(thisRow);
-
                     const product = {} as Product;
                     product["_id"] = thisRow["_id"]!.toString();
                     product["name"] = thisRow["name"]!.toString();
@@ -141,7 +141,7 @@ const AdminCategory = () => {
 
                 return (
                     <>
-                        <Button onClick={onClickEditCategory} color='warning'>
+                        <Button onClick={onClickEditProduct} color='warning'>
                             <EditIcon fontSize='small' />
                         </Button>
                         <Button onClick={onClickDeleteCategory} color='error'>
@@ -164,7 +164,7 @@ const AdminCategory = () => {
     const handleDeleteProduct = () => {
         const deleteProduct = async () => {
             try {
-                await productApi.deleteProduct(selectedProduct._id);
+                await productApi.deleteProduct(selectedProduct._id, axiosRefresh);
             } catch (error) {
                 console.log(error);
             }

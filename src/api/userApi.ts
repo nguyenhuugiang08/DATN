@@ -1,5 +1,5 @@
+import { AxiosInstance } from "axios";
 import axiosClient from "./axiosClient";
-import axiosRefresh from "./axiosRefresh";
 
 export interface DataForgotPassword {
     email: string;
@@ -15,9 +15,9 @@ const userApi = {
         const url = "/user/forgot-password";
         return axiosClient.post(url, data);
     },
-    getInfoUser: () => {
+    getInfoUser: (axios: AxiosInstance) => {
         const url = "/user/info";
-        return axiosRefresh.get(url);
+        return axios.get(url);
     },
     resetPassword: (data: DataResetPassword) => {
         const { email, newPassword } = data;

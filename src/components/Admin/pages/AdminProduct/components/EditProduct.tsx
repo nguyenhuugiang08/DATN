@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Typography, Grid, Button, TextField } from "@mui/material";
+import { Box, Typography, Grid, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FastField, Form, Formik } from "formik";
 import * as yup from "yup";
@@ -21,6 +21,7 @@ import FilterIcon from "@mui/icons-material/Filter";
 import UploadFileField from "customs/UploadFileField";
 import { Thumbnail } from "interfaces/interface";
 import { getFileFromUrl } from "utilities/getFileFromUrl";
+import useAxios from "hooks/useAxios";
 
 const useStyles = makeStyles({
     containerAddBox: {
@@ -100,6 +101,7 @@ const EditProduct = () => {
     const { categories } = useSelector((state: RootState) => state.category);
 
     const dispatch = useAppDispatch();
+    const axiosRefresh = useAxios();
 
     const classes = useStyles();
 
@@ -172,16 +174,18 @@ const EditProduct = () => {
         description: yup.string().required("Vui lòng nhập trường này"),
         quantity: yup.string().required("Vui lòng nhập trường này"),
         discount: yup.string(),
-        // thumbnails: yup.mixed().test("fileSize", "The file is too large", (value) => {
-        //     if (!value.length) return true; // attachment is optional
-        //     return value[0].size <= 2000000;
-        // }),
+        thumbnails: yup.array().of(
+            yup.mixed().test("fileSize", "The file is too large", (value) => {
+                if (!value.length) return true; // attachment is optional
+                return value[0].size <= 2000000;
+            })
+        ),
         colors: yup.array().of(yup.string()).min(1, "Vui lòng chọn ít nhất 1 màu"),
         categoryName: yup.string().required("Vui lòng chọn category cho product"),
     });
 
-    const handleCancelEdit = () => {
-        navigate("/admin/categories");
+    const handleCancelEdit = () => { 
+        navigate("/admin/products");
     };
 
     return (
@@ -220,7 +224,7 @@ const EditProduct = () => {
 
                                 const updateProduct = async () => {
                                     try {
-                                        await productApi.updateProduct({ id, formData });
+                                        await productApi.updateProduct({ id, formData }, axiosRefresh);
                                     } catch (error) {
                                         console.log(error);
                                     }
@@ -283,6 +287,7 @@ const EditProduct = () => {
                                                     component={CheckboxField}
                                                     currentValue={sizes}
                                                     listValues={listSizes}
+                                                    label="sizes"
                                                 />
                                             </Grid>
                                         )}
@@ -323,6 +328,7 @@ const EditProduct = () => {
                                                     component={CheckboxField}
                                                     currentValue={colors}
                                                     listValues={listColors}
+                                                    label="colors"
                                                 />
                                             </Grid>
                                         )}

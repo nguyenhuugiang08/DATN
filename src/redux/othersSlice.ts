@@ -1,17 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Alias } from "../interfaces/interface";
-import type { AxiosError, AxiosInstance } from "axios";
-import aliasApi from "api/aliasApi";
+import type { AxiosError } from "axios";
+import othersApi, { Params } from "api/othersApi";
+import { HomeData } from "../interfaces/interface";
 
 interface ValidationErrors {
     errorMessage: string;
     field_errors: Record<string, string>;
 }
 
-export const getAllAlias = createAsyncThunk<Alias[]>("alias/getAll", async () => {
+export const getHome = createAsyncThunk("others/getHome", async () => {
     try {
-        const response = await aliasApi.getAllAlias();
-        return response.data?.alias;
+        const response = await othersApi.getHome();
+        return response.data;
     } catch (err) {
         let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
         if (!error.response) {
@@ -21,10 +21,10 @@ export const getAllAlias = createAsyncThunk<Alias[]>("alias/getAll", async () =>
     }
 });
 
-export const getTrashAlias = createAsyncThunk<Alias[], AxiosInstance>("alias/trash", async (axiosRefresh: AxiosInstance) => {
+export const search = createAsyncThunk("alias/trash", async (params: Params) => {
     try {
-        const response = await aliasApi.getTrashAlias(axiosRefresh);
-        return response.data?.alias;
+        const response = await othersApi.search(params);
+        return response.data;
     } catch (err) {
         let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
         if (!error.response) {
@@ -34,29 +34,27 @@ export const getTrashAlias = createAsyncThunk<Alias[], AxiosInstance>("alias/tra
     }
 });
 
-interface AliasState {
+interface OthersState {
     error: string | null | undefined;
-    aliases: Alias[];
-    trashAliases: Alias[];
-    alias: Alias;
+    dataHome: HomeData;
+    dataSearch: {};
 }
 
 const initialState = {
-    aliases: [],
-    trashAliases: [],
-    alias: {} as Alias,
+    dataHome: {},
+    dataSearch: {},
     error: null,
-} as AliasState;
+} as OthersState;
 
-const aliasSlice = createSlice({
-    name: "alias",
+const othersSlice = createSlice({
+    name: "others",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(getAllAlias.fulfilled, (state, { payload }) => {
-            state.aliases = [...payload];
+        builder.addCase(getHome.fulfilled, (state, { payload }) => {
+            state.dataHome = { ...payload };
         });
-        builder.addCase(getAllAlias.rejected, (state, action) => {
+        builder.addCase(getHome.rejected, (state, action) => {
             if (action.payload) {
                 state.error = "Have got an exception!";
             } else {
@@ -64,10 +62,10 @@ const aliasSlice = createSlice({
             }
         });
 
-        builder.addCase(getTrashAlias.fulfilled, (state, { payload }) => {
-            state.trashAliases = [...payload];
+        builder.addCase(search.fulfilled, (state, { payload }) => {
+            state.dataSearch = { ...payload };
         });
-        builder.addCase(getTrashAlias.rejected, (state, action) => {
+        builder.addCase(search.rejected, (state, action) => {
             if (action.payload) {
                 state.error = "Have got an exception!";
             } else {
@@ -77,4 +75,4 @@ const aliasSlice = createSlice({
     },
 });
 
-export default aliasSlice.reducer;
+export default othersSlice.reducer;

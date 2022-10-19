@@ -107,7 +107,7 @@ const CheckboxField: React.FC<CustomInputProps & FieldProps> = ({
 
     return (
         <FormControl error={showError}>
-            <label className='login-form-label'>Colors</label>
+            <label className='login-form-label'>{props.label}</label>
             <FormGroup row>
                 {listValues?.map((value, index) => (
                     <FormControlLabel

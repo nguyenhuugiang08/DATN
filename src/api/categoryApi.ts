@@ -1,5 +1,5 @@
-import axiosRefresh from "./axiosRefresh";
 import axiosClient from "./axiosClient";
+import { AxiosInstance } from "axios";
 
 export interface DataCreateCategory {
     name: string;
@@ -17,26 +17,26 @@ const categoryApi = {
         const url = "/category";
         return axiosClient.get(url);
     },
-    createCategory: (data: DataCreateCategory) => {
+    createCategory: (data: DataCreateCategory, axios: AxiosInstance) => {
         const url = "/category/create";
-        return axiosRefresh.post(url, data);
+        return axios.post(url, data);
     },
-    deleteCategory: (params: string) => {
+    deleteCategory: (params: string, axios: AxiosInstance) => {
         const url = `/category/delete/${params}`;
-        return axiosRefresh.delete(url);
+        return axios.delete(url);
     },
-    updateCategory: (data: DataUpdateCategory) => {
+    updateCategory: (data: DataUpdateCategory, axios: AxiosInstance) => {
         const { id, ...rest } = data;
         const url = `/category/update/${id}`;
-        return axiosRefresh.put(url, rest);
+        return axios.put(url, rest);
     },
-    restoreCategory: (params: string) => {
+    restoreCategory: (params: string, axios: AxiosInstance) => {
         const url = `/category/restore/${params}`;
-        return axiosRefresh.patch(url);
+        return axios.patch(url);
     },
-    getTrashCategory: () => {
+    getTrashCategory: (axios: AxiosInstance) => {
         const url = `/category/trash`;
-        return axiosRefresh.get(url);
+        return axios.get(url);
     },
     getCategoryById: (params: string | undefined) => {
         const url = `/category/${params}`;

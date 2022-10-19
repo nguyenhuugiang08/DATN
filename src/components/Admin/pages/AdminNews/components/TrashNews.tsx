@@ -3,14 +3,15 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "redux/store";
 import { DataGrid, GridApi, GridColDef, GridEditCellValueParams } from "@mui/x-data-grid";
 import { Button, Typography, Box } from "@mui/material";
+import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import { useNavigate } from "react-router-dom";
+import { Picture } from "interfaces/interface";
 import { toast } from "react-toastify";
 import { makeStyles } from "@mui/styles";
-import { getTrashCategory } from "redux/categorySlice";
-import Roadmap from "components/Admin/components/Roadmap";
-import categoryApi from "api/categoryApi";
-import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import useAxios from "hooks/useAxios";
+import { getTrashNews } from "redux/newsSlice";
+import newsApi from "api/newsApi";
+import Roadmap from "components/Admin/components/Roadmap";
 
 const useStyles = makeStyles({
     containerBox: {
@@ -20,14 +21,14 @@ const useStyles = makeStyles({
         display: "flex",
         justifyContent: "space-between",
     },
-    headingAlias: {
+    headingNews: {
         fontSize: "18px !important",
         lineHeight: "26px !important",
         textTransform: "capitalize",
         color: "#212121",
         paddingTop: "6px",
     },
-    linkAddAlias: {
+    linkAddNews: {
         textDecoration: "none",
         color: "#fff",
         alignItems: "center",
@@ -39,30 +40,56 @@ const useStyles = makeStyles({
         color: "#2f80ed",
         fontSize: "14px",
     },
+    pictureNews: {
+        width: "160px",
+        height: "100px",
+        objectFit: "contain",
+    },
 });
 
-const TrashCategory = () => {
+const TrashNews = () => {
     const dispatch = useAppDispatch();
-    const { trashCategories } = useSelector((state: RootState) => state.category);
+    const { trashNews } = useSelector((state: RootState) => state.news);
     const navigate = useNavigate();
 
     const classes = useStyles();
+
     const axiosRefresh = useAxios();
 
     const columns: GridColDef[] = [
-        { field: "_id", headerName: "ID", width: 320 },
-        { field: "name", headerName: "Name", width: 240 },
-        { field: "aliasName", headerName: "Alias name", width: 240 },
-        { field: "deleted", headerName: "Deleted", width: 170, sortable: false },
+        {
+            field: "pictures",
+            headerName: "Photo",
+            width: 180,
+            renderCell: (params) => {
+                const listPictures: Picture[] = params.value;
+                return (
+                    <div>
+                        {listPictures?.map(
+                            (picture: Picture, index: number) =>
+                                index === 0 && (
+                                    <img
+                                        src={picture.url}
+                                        alt='Ppicture'
+                                        key={picture._id}
+                                        className={classes.pictureNews}
+                                    />
+                                )
+                        )}
+                    </div>
+                );
+            },
+        },
+        { field: "_id", headerName: "ID", width: 160, hide: true },
+        { field: "title", headerName: "Title", width: 160 },
+        { field: "content", headerName: "Content", width: 700, sortable: false },
         {
             field: "action",
             headerName: "Action",
             sortable: false,
             width: 200,
             renderCell: (params) => {
-                const onClickRestoreCategory = (
-                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                ) => {
+                const onClickRestoreNews = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
                     e.stopPropagation();
 
                     const api: GridApi = params.api;
@@ -72,25 +99,33 @@ const TrashCategory = () => {
                         .filter((c) => c.field !== "__check__" && !!c)
                         .forEach((c) => (thisRow[c.field] = params.getValue(params.id, c.field)));
 
+                    const restoreNews = async () => {
+                        try {
+                            await newsApi.restoreNews(thisRow._id!.toString(), axiosRefresh);
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    };
+
                     toast
-                        .promise(categoryApi.restoreCategory(thisRow._id!.toString(), axiosRefresh), {
+                        .promise(restoreNews, {
                             pending: "Đang chờ xử lý",
-                            success: "Khôi phục category thành công",
+                            success: "Khôi phục news thành công",
                             error: {
                                 render({ data }) {
                                     const { response } = data;
-                                    return `Khôi phục category thất bại ${response.data?.message}`;
+                                    return `Khôi phục news thất bại ${response.data?.message}`;
                                 },
                             },
                         })
                         .then(() => {
-                            navigate("/admin/categories");
+                            navigate("/admin/news");
                         });
                 };
 
                 return (
                     <>
-                        <Button onClick={onClickRestoreCategory} color='info'>
+                        <Button onClick={onClickRestoreNews} color='primary'>
                             <RestoreFromTrashIcon fontSize='small' />
                         </Button>
                     </>
@@ -100,28 +135,29 @@ const TrashCategory = () => {
     ];
 
     useEffect(() => {
-        dispatch(getTrashCategory(axiosRefresh));
+        dispatch(getTrashNews(axiosRefresh));
     }, [dispatch]);
 
     return (
         <>
             <Box className={classes.containerBox}>
-                <Typography className={classes.headingAlias}>trash categories</Typography>
+                <Typography className={classes.headingNews}>Restore News</Typography>
                 <Roadmap />
             </Box>
-            <div style={{ minHeight: 620, height: 400, width: "100%" }}>
+            <div style={{ height: "auto", width: "100%" }}>
                 <DataGrid
-                    className='datagrid-alias'
+                    className='datagrid-News'
                     getRowId={(row) => row._id}
-                    rows={trashCategories}
+                    rows={trashNews}
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[10]}
-                    checkboxSelection
+                    getRowHeight={() => "auto"}
+                    autoHeight={true}
                 />
             </div>
         </>
     );
 };
 
-export default TrashCategory;
+export default TrashNews;

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Category } from "../interfaces/interface";
-import type { AxiosError } from "axios";
+import type { AxiosError, AxiosInstance } from "axios";
 import categoryApi from "api/categoryApi";
 
 interface ValidationErrors {
@@ -21,18 +21,21 @@ export const getAllCategory = createAsyncThunk<Category[]>("category/getAll", as
     }
 });
 
-export const getTrashCategory = createAsyncThunk<Category[]>("category/trash", async () => {
-    try {
-        const response = await categoryApi.getTrashCategory();
-        return response.data?.listCategories;
-    } catch (err) {
-        let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
-        if (!error.response) {
-            throw err;
+export const getTrashCategory = createAsyncThunk<Category[], AxiosInstance>(
+    "category/trash",
+    async (axiosRefresh: AxiosInstance) => {
+        try {
+            const response = await categoryApi.getTrashCategory(axiosRefresh);
+            return response.data?.listCategories;
+        } catch (err) {
+            let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
+            if (!error.response) {
+                throw err;
+            }
+            return error.response.data;
         }
-        return error.response.data;
     }
-});
+);
 
 interface categoryState {
     error: string | null | undefined;

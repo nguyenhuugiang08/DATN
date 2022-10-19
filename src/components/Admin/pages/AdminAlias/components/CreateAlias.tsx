@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 import Roadmap from "components/Admin/components/Roadmap";
+import useAxios from "hooks/useAxios";
 
 const useStyles = makeStyles({
     containerAddBox: {
@@ -56,7 +57,7 @@ const useStyles = makeStyles({
 
 const CreateAlias: React.FC = () => {
     const navigate = useNavigate();
-
+    const axiosRefresh = useAxios();
     const classes = useStyles();
 
     const { aliases } = useSelector((state: RootState) => state.alias);
@@ -107,7 +108,7 @@ const CreateAlias: React.FC = () => {
                             onSubmit={async (values) => {
                                 const createAlias = async () => {
                                     try {
-                                        await aliasApi.createAlias(values);
+                                        await aliasApi.createAlias(values, axiosRefresh);
                                     } catch (error) {
                                         console.log(error);
                                     }

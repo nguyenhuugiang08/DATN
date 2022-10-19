@@ -1,20 +1,25 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, Grid, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FastField, Form, Formik } from "formik";
 import * as yup from "yup";
+import InputField from "customs/InputField";
 import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import InputField from "customs/InputField";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "redux/store";
 import Roadmap from "components/Admin/components/Roadmap";
-import categoryApi from "api/categoryApi";
-import SelectField from "customs/SelectField";
-import { useEffect } from "react";
-import { getAllAlias } from "redux/aliasSlice";
+import { RootState, useAppDispatch } from "redux/store";
+import { useSelector } from "react-redux";
+import MessageIcon from "@mui/icons-material/Message";
+import TextareaField from "customs/TextareaField";
+import FilterIcon from "@mui/icons-material/Filter";
+import UploadFileField from "customs/UploadFileField";
+import { Picture } from "interfaces/interface";
+import { getFileFromUrl } from "utilities/getFileFromUrl";
 import useAxios from "hooks/useAxios";
+import newsApi from "api/newsApi";
+import { getAllNews } from "redux/newsSlice";
 
 const useStyles = makeStyles({
     containerAddBox: {
@@ -24,7 +29,7 @@ const useStyles = makeStyles({
         display: "flex",
         justifyContent: "space-between",
     },
-    headingAdd: {
+    headingAddAlias: {
         fontSize: "18px !important",
         lineHeight: "26px !important",
         textTransform: "capitalize",
@@ -58,61 +63,67 @@ const useStyles = makeStyles({
     },
 });
 
-const CreateCategory = () => {
+const CreateNews: React.FC = () => {
     const navigate = useNavigate();
 
-    const classes = useStyles();
+    const { listNews } = useSelector((state: RootState) => state.news);
 
-    const { categories } = useSelector((state: RootState) => state.category);
-    const { aliases } = useSelector((state: RootState) => state.alias);
     const dispatch = useAppDispatch();
     const axiosRefresh = useAxios();
 
+    const classes = useStyles();
+
     useEffect(() => {
-        dispatch(getAllAlias());
+        dispatch(getAllNews());
     }, [dispatch]);
 
     const initialValues = {
-        name: "",
-        aliasName: "",
+        title: "",
+        content: "",
+        pictures: [] as Picture[],
     };
 
     const validationSchema = yup.object().shape({
-        name: yup
+        title: yup
             .string()
             .required("Vui lòng nhập trường này")
             .test({
                 test(value, ctx) {
-                    const listNameCategories = categories?.map((category) =>
-                        category.name.toLowerCase()
-                    );
+                    const listTitleNews = listNews?.map((news) => news.title.toLowerCase());
+                    console.log(listTitleNews);
 
-                    if (listNameCategories.includes(value?.toLowerCase() as string)) {
+                    if (listTitleNews.includes(value?.toLowerCase() as string)) {
                         return ctx.createError({
-                            message: "Đã tồn tại tên category này. Vui lòng nhập lại!",
+                            message: "Đã tồn tại title này. Vui lòng nhập lại!",
                         });
                     }
                     return true;
                 },
             }),
-        aliasName: yup.string().required("Vui lòng chọn tên alias"),
+        content: yup.string().required("Vui lòng nhập trường này"),
+        pictures: yup.array().of(
+            yup.mixed().test("fileSize", "The file is too large", (value) => {
+                if (!value.length) return true; // attachment is optional
+                return value[0].size <= 2000000;
+            })
+        ),
     });
 
-    const handleCancelCreate = () => {
-        navigate("/admin/categories");
+    const handleCancelEdit = () => {
+        navigate("/admin/news");
     };
 
     return (
         <div>
             <Box className={classes.containerAddBox}>
-                <Typography className={classes.headingAdd}>Create aliases</Typography>
+                <Typography className={classes.headingAddAlias}>edit news</Typography>
                 <Roadmap />
             </Box>
             <Box className={classes.boxContent}>
                 <Grid container>
-                    <Grid item xs={12} className={classes.headingAdd}>
+                    <Grid item xs={12} className={classes.headingAddAlias}>
                         <InfoOutlinedIcon fontSize='small' className={classes.positionIcon} /> about
-                        alias
+                        news
                         <Box className={classes.line}></Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -120,26 +131,36 @@ const CreateCategory = () => {
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             onSubmit={async (values) => {
-                                const createCategory = async () => {
+                                console.log(values);
+                                const formData = new FormData();
+                                for (let picture of values.pictures) {
+                                    const file = await getFileFromUrl(picture.url, "example.jpg");
+                                    formData.append("pictures", file);
+                                }
+                                formData.append("title", values.title);
+                                formData.append("content", values.content);
+
+                                const createNews = async () => {
                                     try {
-                                        await categoryApi.createCategory(values, axiosRefresh);
+                                        await newsApi.createNews({ formData }, axiosRefresh);
                                     } catch (error) {
                                         console.log(error);
                                     }
                                 };
+
                                 toast
-                                    .promise(createCategory, {
+                                    .promise(createNews, {
                                         pending: "Đang chờ xử lý",
-                                        success: "Tạo category mới thành công",
+                                        success: "Cập nhật news thành công",
                                         error: {
                                             render({ data }) {
                                                 const { response } = data;
-                                                return `Tạo mới thất bại ${response.data?.message}`;
+                                                return `Cập nhật thất bại ${response.data?.message}`;
                                             },
                                         },
                                     })
                                     .then(() => {
-                                        navigate("/admin/categories");
+                                        navigate("/admin/news");
                                     });
                             }}
                         >
@@ -148,21 +169,54 @@ const CreateCategory = () => {
                                     <Grid container spacing={4}>
                                         <Grid item xs={12} md={6}>
                                             <FastField
-                                                name='aliasName'
-                                                component={SelectField}
-                                                label='Alias Name'
-                                                listValues={aliases}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={6}>
-                                            <FastField
-                                                name={"name"}
+                                                name={"title"}
                                                 component={InputField}
-                                                label={"Category Name"}
+                                                label={"Title News"}
                                             />
                                         </Grid>
                                     </Grid>
+
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        className={classes.headingAddAlias}
+                                        sx={{ marginTop: "80px" }}
+                                    >
+                                        <MessageIcon
+                                            fontSize='small'
+                                            className={classes.positionIcon}
+                                        />{" "}
+                                        content news
+                                        <Box className={classes.line}></Box>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <FastField
+                                            name='content'
+                                            component={TextareaField}
+                                            currentValue={""}
+                                        />
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        className={classes.headingAddAlias}
+                                        sx={{ marginTop: "80px" }}
+                                    >
+                                        <FilterIcon
+                                            fontSize='small'
+                                            className={classes.positionIcon}
+                                        />{" "}
+                                        upload image
+                                        <Box className={classes.line}></Box>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <FastField
+                                            name='pictures'
+                                            component={UploadFileField}
+                                            currentValue={[] as Picture[]}
+                                        />
+                                    </Grid>
+
                                     <Button
                                         type='submit'
                                         variant='contained'
@@ -182,7 +236,7 @@ const CreateCategory = () => {
                                             ml: 2,
                                             marginTop: "35px",
                                         }}
-                                        onClick={handleCancelCreate}
+                                        onClick={handleCancelEdit}
                                     >
                                         cancel
                                     </Button>
@@ -196,4 +250,4 @@ const CreateCategory = () => {
     );
 };
 
-export default CreateCategory;
+export default CreateNews;

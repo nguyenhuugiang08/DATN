@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import Roadmap from "components/Admin/components/Roadmap";
 import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
+import useAxios from "hooks/useAxios";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     containerAddBox: {
@@ -59,6 +60,7 @@ const EditAlias = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [nameAlias, setNameAlias] = useState("");
+    const axiosRefresh = useAxios();
 
     const classes = useStyles();
 
@@ -125,7 +127,7 @@ const EditAlias = () => {
                                 const newValues = { id, ...values };
                                 const updateAlias = async () => {
                                     try {
-                                        await aliasApi.updateAlias(newValues);
+                                        await aliasApi.updateAlias(newValues, axiosRefresh);
                                     } catch (error) {
                                         console.log(error);
                                     }

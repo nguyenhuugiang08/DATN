@@ -24,11 +24,25 @@ import CreateProduct from "components/Admin/pages/AdminProduct/components/Create
 import TrashProduct from "components/Admin/pages/AdminProduct/components/TrashProduct";
 import EditProduct from "components/Admin/pages/AdminProduct/components/EditProduct";
 import Products from "../pages/Products";
+import { useSelector } from "react-redux";
+import { RootState } from "redux/store";
+import { useEffect, useState } from "react";
+import EditNews from "components/Admin/pages/AdminNews/components/EditNews";
+import CreateNews from "components/Admin/pages/AdminNews/components/CreateNews";
+import TrashNews from "components/Admin/pages/AdminNews/components/TrashNews";
 
 const RouterApp: React.FC = () => {
     const { search } = useLocation();
     const { query } = qs.parseUrl(search);
     const { email } = query;
+    const { entities } = useSelector((state: RootState) => state.auth);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        if (entities?.[0]?.role === "admin") {
+            setIsAdmin(entities?.[0]?.role === "admin");
+        }
+    }, [entities]);
 
     const pulicRouters: RouteObject[] = [
         {
@@ -60,7 +74,6 @@ const RouterApp: React.FC = () => {
                 {
                     path: "register",
                     element: <Register />,
-                    
                 },
                 {
                     path: "forgot-password",
@@ -81,28 +94,7 @@ const RouterApp: React.FC = () => {
             children: [
                 {
                     path: "/admin",
-                    element: <Home />,
-                },
-                {
-                    path: "product",
-                    element: <AdminProduct />,
-                },
-
-                {
-                    path: "category",
-                    element: <AdminCategory />,
-                },
-                {
-                    path: "user",
-                    element: <AdminUser />,
-                },
-                {
-                    path: "news",
-                    element: <AdminNews />,
-                },
-                {
-                    path: "order",
-                    element: <AdminOrder />,
+                    element: isAdmin ? <Home /> : <Navigate to='/' replace />,
                 },
             ],
         },
@@ -169,6 +161,28 @@ const RouterApp: React.FC = () => {
                 {
                     path: "trash-products",
                     element: <TrashProduct />,
+                },
+            ],
+        },
+        {
+            path: "admin/news",
+            element: <AdminLayout />,
+            children: [
+                {
+                    path: "/admin/news",
+                    element: <AdminNews />,
+                },
+                {
+                    path: "edit-news/:id",
+                    element: <EditNews />,
+                },
+                {
+                    path: "create-news",
+                    element: <CreateNews />,
+                },
+                {
+                    path: "trash-news",
+                    element: <TrashNews />,
                 },
             ],
         },

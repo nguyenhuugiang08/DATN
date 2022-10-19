@@ -1,5 +1,5 @@
-import axiosRefresh from "./axiosRefresh";
 import axiosClient from "./axiosClient";
+import { AxiosInstance } from "axios";
 
 export interface DataCreateAlias {
     name: string;
@@ -15,26 +15,26 @@ const aliasApi = {
         const url = "/alias";
         return axiosClient.get(url);
     },
-    createAlias: (data: DataCreateAlias) => {
+    createAlias: (data: DataCreateAlias, axios: AxiosInstance) => {
         const url = "/alias/create";
-        return axiosRefresh.post(url, data);
+        return axios.post(url, data);
     },
-    deleteAlias: (params: string) => {
+    deleteAlias: (params: string, axios: AxiosInstance) => {
         const url = `/alias/delete/${params}`;
-        return axiosRefresh.delete(url);
+        return axios.delete(url);
     },
-    updateAlias: (data: DataUpdateAlias) => {
+    updateAlias: (data: DataUpdateAlias, axios: AxiosInstance) => {
         const { id, ...rest } = data;
         const url = `/alias/update/${id}`;
-        return axiosRefresh.put(url, rest);
+        return axios.put(url, rest);
     },
-    restoreAlias: (params: string) => {
+    restoreAlias: (params: string, axios: AxiosInstance) => {
         const url = `/alias/restore/${params}`;
-        return axiosRefresh.patch(url);
+        return axios.patch(url);
     },
-    getTrashAlias: () => {
+    getTrashAlias: (axios: AxiosInstance) => {
         const url = `/alias/trash`;
-        return axiosRefresh.get(url);
+        return axios.get(url);
     },
     getAliasById: (params: string | undefined) => {
         const url = `/alias/${params}`;

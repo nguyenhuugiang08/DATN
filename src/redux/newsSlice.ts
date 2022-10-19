@@ -1,17 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Product } from "../interfaces/interface";
+import { News } from "../interfaces/interface";
 import type { AxiosError, AxiosInstance } from "axios";
-import productApi from "../api/productApi";
+import newsApi from "api/newsApi";
 
 interface ValidationErrors {
     errorMessage: string;
     field_errors: Record<string, string>;
 }
 
-export const getAllProducts = createAsyncThunk<Product[]>("product/getAll", async () => {
+export const getAllNews = createAsyncThunk<News[]>("news/getAll", async () => {
     try {
-        const response = await productApi.getAllProduct();
-        return response.data?.listProducts;
+        const response = await newsApi.getAllNews();
+        return response.data?.news;
     } catch (err) {
         let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
         if (!error.response) {
@@ -21,11 +21,11 @@ export const getAllProducts = createAsyncThunk<Product[]>("product/getAll", asyn
     }
 });
 
-export const getProductById = createAsyncThunk(
-    "product/getProductById",
+export const getNewsById = createAsyncThunk(
+    "news/getNewsById",
     async (id: string | undefined) => {
         try {
-            const response = await productApi.getProductById(id);
+            const response = await newsApi.getNewsById(id);
             return response.data;
         } catch (err) {
             let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
@@ -37,12 +37,12 @@ export const getProductById = createAsyncThunk(
     }
 );
 
-export const getTrashProducts = createAsyncThunk<Product[], AxiosInstance>(
-    "product/getTrash",
+export const getTrashNews = createAsyncThunk<News[], AxiosInstance>(
+    "news/getTrash",
     async (axiosRefresh: AxiosInstance) => {
         try {
-            const response = await productApi.getTrashProduct(axiosRefresh);
-            return response.data?.listProducts;
+            const response = await newsApi.getTrashNews(axiosRefresh);
+            return response.data?.news;
         } catch (err) {
             let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
             if (!error.response) {
@@ -53,29 +53,29 @@ export const getTrashProducts = createAsyncThunk<Product[], AxiosInstance>(
     }
 );
 
-interface ProductState {
+interface NewsState {
     error: string | null | undefined;
-    products: Product[];
-    trashProducts: Product[];
-    product: Product;
+    listNews: News[];
+    trashNews: News[];
+    news: News;
 }
 
 const initialState = {
-    products: [],
-    product: {} as Product,
-    trashProducts: [],
+    listNews: [],
+    news: {} as News,
+    trashNews: [],
     error: null,
-} as ProductState;
+} as NewsState;
 
-const productSlice = createSlice({
-    name: "product",
+const newsSlice = createSlice({
+    name: "news",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(getAllProducts.fulfilled, (state, { payload }) => {
-            state.products = [...payload];
+        builder.addCase(getAllNews.fulfilled, (state, { payload }) => {
+            state.listNews = [...payload];
         });
-        builder.addCase(getAllProducts.rejected, (state, action) => {
+        builder.addCase(getAllNews.rejected, (state, action) => {
             if (action.payload) {
                 state.error = "Have got an exception!";
             } else {
@@ -83,10 +83,10 @@ const productSlice = createSlice({
             }
         });
 
-        builder.addCase(getProductById.fulfilled, (state, { payload }) => {
-            state.product = { ...payload };
+        builder.addCase(getNewsById.fulfilled, (state, { payload }) => {
+            state.news = { ...payload };
         });
-        builder.addCase(getProductById.rejected, (state, action) => {
+        builder.addCase(getNewsById.rejected, (state, action) => {
             if (action.payload) {
                 state.error = "Have got an exception!";
             } else {
@@ -94,10 +94,10 @@ const productSlice = createSlice({
             }
         });
 
-        builder.addCase(getTrashProducts.fulfilled, (state, { payload }) => {
-            state.trashProducts = [...payload];
+        builder.addCase(getTrashNews.fulfilled, (state, { payload }) => {
+            state.trashNews = [...payload];
         });
-        builder.addCase(getTrashProducts.rejected, (state, action) => {
+        builder.addCase(getTrashNews.rejected, (state, action) => {
             if (action.payload) {
                 state.error = "Have got an exception!";
             } else {
@@ -107,4 +107,4 @@ const productSlice = createSlice({
     },
 });
 
-export default productSlice.reducer;
+export default newsSlice.reducer;

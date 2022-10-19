@@ -22,6 +22,7 @@ import { Alias } from "interfaces/interface";
 import aliasApi from "api/aliasApi";
 import { toast } from "react-toastify";
 import { makeStyles } from "@mui/styles";
+import useAxios from "hooks/useAxios";
 
 const useStyles = makeStyles({
     containerBox: {
@@ -61,6 +62,8 @@ const AdminAlias = () => {
     const navigate = useNavigate();
 
     const classes = useStyles();
+
+    const axiosRefresh = useAxios();
 
     const columns: GridColDef[] = [
         { field: "_id", headerName: "ID", width: 320 },
@@ -129,7 +132,7 @@ const AdminAlias = () => {
     const handleDeleteAlias = () => {
         const deleteAlias = async () => {
             try {
-                await aliasApi.deleteAlias(selectedAlias._id);
+                await aliasApi.deleteAlias(selectedAlias._id, axiosRefresh);
             } catch (error) {
                 console.log(error);
             }

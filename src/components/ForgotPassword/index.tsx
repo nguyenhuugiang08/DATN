@@ -1,7 +1,7 @@
 import { Button, Container, Grid } from "@mui/material";
 import { FastField, Form, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import InputField from "customs/InputField";
 import * as yup from "yup";
 import "./forgotPassword.scss";
@@ -20,17 +20,6 @@ const ForgotPassword: React.FC = () => {
 
     return (
         <div className='login'>
-            <ToastContainer
-                position='top-right'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <div className='login-location'>
                 <Container maxWidth='lg'>
                     <Grid>
@@ -61,8 +50,21 @@ const ForgotPassword: React.FC = () => {
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             onSubmit={async (values) => {
-                                await userApi.forgotPassword(values);
-                                navigate("/account/login");
+                                toast
+                                    .promise(userApi.forgotPassword(values), {
+                                        pending: "Đang chờ xử lý",
+                                        success:
+                                            "Gửi yêu cầu thành công. Vui lòng kiểm tra email của bạn để reset password",
+                                        error: {
+                                            render({ data }) {
+                                                const { response } = data;
+                                                return `Gửi yêu cầu thất bại ${response.data?.message}`;
+                                            },
+                                        },
+                                    })
+                                    .then(() => {
+                                        navigate("/account/login");
+                                    });
                             }}
                         >
                             {(formikProps) => (

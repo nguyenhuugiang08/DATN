@@ -6,6 +6,8 @@ import authReducer from "./authSlice";
 import productReducer from "./productSlice";
 import aliasReducer from "./aliasSlice";
 import categoryReducer from "./categorySlice";
+import newsReducer from "./newsSlice";
+import othersReducer from "./othersSlice";
 import thunk from "redux-thunk";
 
 const rootReducer = combineReducers({
@@ -13,12 +15,13 @@ const rootReducer = combineReducers({
     product: productReducer,
     alias: aliasReducer,
     category: categoryReducer,
+    news: newsReducer,
+    others: othersReducer,
 });
 
 const persistConfig = {
     key: "root",
     storage,
-    // whitelist: ["auth"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

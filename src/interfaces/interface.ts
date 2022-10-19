@@ -4,6 +4,12 @@ export interface Thumbnail {
     url: string;
 }
 
+export interface Picture {
+    _id?: string;
+    urlId?: string;
+    url: string;
+}
+
 export interface Product {
     _id?: string;
     trademark: string;
@@ -43,4 +49,28 @@ export interface Category {
     aliasId: string;
     deleted: boolean;
     aliasName?: string;
+}
+
+export interface News {
+    _id: string;
+    title: string;
+    content: string;
+    pictures: Picture[];
+}
+
+export interface HomeData {
+    bannerUrls: string[];
+    news: News[];
+    featuredProducts: [
+        {
+            title: string;
+            data: Product[];
+        }
+    ];
+    collections: [
+        {
+            title: string;
+            data: Product[];
+        }
+    ];
 }

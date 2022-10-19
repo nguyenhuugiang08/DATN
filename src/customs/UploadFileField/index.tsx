@@ -3,8 +3,9 @@ import "./customfield.scss";
 import { FieldProps } from "formik";
 import { makeStyles } from "@mui/styles";
 import { Thumbnail } from "interfaces/interface";
-import { Grid, Button } from "@mui/material";
+import { Grid } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface CustomInputProps {
     type?: string;
@@ -32,6 +33,17 @@ const useStyles = makeStyles({
     uploadIcon: {
         position: "relative",
         top: "4px",
+    },
+    deleteImageIcon: {
+        position: "absolute",
+        cursor: "pointer",
+        right: 0,
+        top: 0,
+        borderRadius: "999px",
+        padding: "4px 6px",
+        "&:hover": {
+            backgroundColor: "rgba(0,0,0,0.1)",
+        },
     },
 });
 
@@ -74,14 +86,15 @@ const UploadFileField: React.FC<CustomInputProps & FieldProps> = ({
 
     return (
         <>
-            <Grid container>
+            <Grid container sx={{ mb: 4 }}>
                 {valueInputUpload?.map((thumbnail: Thumbnail, index: number) => (
-                    <Grid item xs={12} md={4} xl={2} key={index}>
+                    <Grid item xs={12} md={4} xl={2} key={index} sx={{ position: "relative" }}>
                         <div
                             style={{ backgroundImage: `url(${thumbnail.url})` }}
                             className={classes.thumbnailsPreview}
                         ></div>
-                        <Button
+                        <div
+                            className={classes.deleteImageIcon}
                             onClick={() =>
                                 setValueInputUpload(
                                     valueInputUpload.filter(
@@ -90,8 +103,8 @@ const UploadFileField: React.FC<CustomInputProps & FieldProps> = ({
                                 )
                             }
                         >
-                            Delete image
-                        </Button>
+                            <CloseIcon fontSize='small' color='error' />
+                        </div>
                     </Grid>
                 ))}
             </Grid>

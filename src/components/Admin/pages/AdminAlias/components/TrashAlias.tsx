@@ -10,6 +10,7 @@ import { RootState, useAppDispatch } from "redux/store";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import { toast } from "react-toastify";
 import aliasApi from "api/aliasApi";
+import useAxios from "hooks/useAxios";
 
 const useStyles = makeStyles({
     containerBox: {
@@ -39,11 +40,13 @@ const TrashAlias = () => {
     const dispatch = useAppDispatch();
     const { trashAliases } = useSelector((state: RootState) => state.alias);
 
+    const axiosRefresh = useAxios();
+
     const classes = useStyles();
     const navigate = useNavigate();
 
     useEffect(() => {
-        dispatch(getTrashAlias());
+        dispatch(getTrashAlias(axiosRefresh));
     }, [dispatch]);
 
     const columns: GridColDef[] = [
@@ -69,7 +72,7 @@ const TrashAlias = () => {
                         .forEach((c) => (thisRow[c.field] = params.getValue(params.id, c.field)));
 
                     toast
-                        .promise(aliasApi.restoreAlias(thisRow["_id"]!.toString()), {
+                        .promise(aliasApi.restoreAlias(thisRow["_id"]!.toString(), axiosRefresh), {
                             pending: "Đang chờ xử lý",
                             success: "Restore alias thành công",
                             error: {

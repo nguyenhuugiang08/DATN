@@ -9,12 +9,17 @@ import CheckIcon from "@mui/icons-material/Check";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { toast } from "react-toastify";
 import Roadmap from "components/Admin/components/Roadmap";
-import categoryApi from "api/categoryApi";
-import SelectField from "customs/SelectFieldDefaultValue";
 import { RootState, useAppDispatch } from "redux/store";
 import { useSelector } from "react-redux";
-import { getAllAlias } from "redux/aliasSlice";
+import MessageIcon from "@mui/icons-material/Message";
+import TextareaField from "customs/TextareaField";
+import FilterIcon from "@mui/icons-material/Filter";
+import UploadFileField from "customs/UploadFileField";
+import { Picture } from "interfaces/interface";
+import { getFileFromUrl } from "utilities/getFileFromUrl";
 import useAxios from "hooks/useAxios";
+import newsApi from "api/newsApi";
+import { getAllNews } from "redux/newsSlice";
 
 const useStyles = makeStyles({
     containerAddBox: {
@@ -58,14 +63,18 @@ const useStyles = makeStyles({
     },
 });
 
-const EditCategory = () => {
+const EditNews = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [nameCategory, setNameCategory] = useState("");
-    const [aliasName, setAliasName] = useState("");
+    const [values, setValues] = useState({
+        title: "",
+        content: "",
+        pictures: [] as Picture[],
+    });
 
-    const { categories } = useSelector((state: RootState) => state.category);
-    const { aliases } = useSelector((state: RootState) => state.alias);
+    const { title, content, pictures } = values;
+
+    const { listNews } = useSelector((state: RootState) => state.news);
 
     const dispatch = useAppDispatch();
     const axiosRefresh = useAxios();
@@ -73,63 +82,74 @@ const EditCategory = () => {
     const classes = useStyles();
 
     useEffect(() => {
-        const getCategory = async () => {
+        const getNews = async () => {
             try {
-                const response = await categoryApi.getCategoryById(id);
-                setNameCategory(response.data?.name);
-                setAliasName(response.data?.aliasName);
+                const response = await newsApi.getNewsById(id);
+                setValues({
+                    ...values,
+                    title: response.data?.title,
+                    content: response.data?.content,
+                    pictures: response.data?.pictures,
+                });
             } catch (error) {
                 console.log(error);
             }
         };
-        getCategory();
+        getNews();
     }, [id]);
 
-
     useEffect(() => {
-        dispatch(getAllAlias());
+        dispatch(getAllNews());
     }, [dispatch]);
 
     const initialValues = {
-        name: "",
-        aliasName: "",
+        title: "",
+        content: "",
+        pictures: [] as Picture[],
     };
 
     const validationSchema = yup.object().shape({
-        name: yup
+        title: yup
             .string()
             .required("Vui lòng nhập trường này")
             .test({
                 test(value, ctx) {
-                    const listNameCategories = categories
-                        ?.filter((category) => category.name.toLowerCase() !== nameCategory?.toLowerCase())
-                        .map((category) => category.name.toLowerCase());
+                    const listTitleNews = listNews
+                        ?.filter((news) => news.title.toLowerCase() !== title?.toLowerCase())
+                        .map((news) => news.title.toLowerCase());
 
-                    if (listNameCategories.includes(value?.toLowerCase() as string)) {
+                    if (listTitleNews.includes(value?.toLowerCase() as string)) {
                         return ctx.createError({
-                            message: "Đã tồn tại tên category này. Vui lòng nhập lại!",
+                            message: "Đã tồn tại title này. Vui lòng nhập lại!",
                         });
                     }
                     return true;
                 },
             }),
+        content: yup.string().required("Vui lòng nhập trường này"),
+        pictures: yup.array().of(
+            yup.mixed().test("fileSize", "The file is too large", (value) => {
+                if (!value.length) return true; // attachment is optional
+                return value[0].size <= 2000000;
+            })
+        ),
     });
 
     const handleCancelEdit = () => {
-        navigate("/admin/categories");
+        navigate("/admin/news");
     };
 
     return (
         <div>
             <Box className={classes.containerAddBox}>
-                <Typography className={classes.headingAddAlias}>add category</Typography>
+                <Typography className={classes.headingAddAlias}>edit news</Typography>
                 <Roadmap />
             </Box>
             <Box className={classes.boxContent}>
                 <Grid container>
                     <Grid item xs={12} className={classes.headingAddAlias}>
                         <InfoOutlinedIcon fontSize='small' className={classes.positionIcon} /> about
-                        category
+                        news
                         <Box className={classes.line}></Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -137,19 +157,27 @@ const EditCategory = () => {
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             onSubmit={async (values) => {
-                                const newValues = { id, ...values };
-                                const updateCategory = async () => {
+                                console.log(values);
+                                const formData = new FormData();
+                                for (let picture of values.pictures) {
+                                    const file = await getFileFromUrl(picture.url, "example.jpg");
+                                    formData.append("pictures", file);
+                                }
+                                formData.append("title", values.title);
+                                formData.append("content", values.content);
+
+                                const updateNews = async () => {
                                     try {
-                                        await categoryApi.updateCategory(newValues, axiosRefresh);
+                                        await newsApi.updateNews({ id, formData }, axiosRefresh);
                                     } catch (error) {
                                         console.log(error);
                                     }
                                 };
 
                                 toast
-                                    .promise(updateCategory, {
+                                    .promise(updateNews, {
                                         pending: "Đang chờ xử lý",
-                                        success: "Cập nhật category thành công",
+                                        success: "Cập nhật news thành công",
                                         error: {
                                             render({ data }) {
                                                 const { response } = data;
@@ -158,36 +186,69 @@ const EditCategory = () => {
                                         },
                                     })
                                     .then(() => {
-                                        navigate("/admin/categories");
+                                        navigate("/admin/news");
                                     });
                             }}
                         >
                             {(formikProps) => (
                                 <Form>
                                     <Grid container spacing={4}>
-                                        {aliasName && (
+                                        {title && (
                                             <Grid item xs={12} md={6}>
                                                 <FastField
-                                                    name='aliasName'
-                                                    component={SelectField}
-                                                    label='Alias'
-                                                    currentValue={aliasName}
-                                                    listValues={aliases}
-                                                />
-                                            </Grid>
-                                        )}
-
-                                        {nameCategory && (
-                                            <Grid item xs={12} md={6}>
-                                                <FastField
-                                                    name={"name"}
+                                                    name={"title"}
                                                     component={InputFieldDefaultValue}
-                                                    label={"Category Name"}
-                                                    currentValue={nameCategory}
+                                                    label={"Title News"}
+                                                    currentValue={title}
                                                 />
                                             </Grid>
                                         )}
                                     </Grid>
+
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        className={classes.headingAddAlias}
+                                        sx={{ marginTop: "80px" }}
+                                    >
+                                        <MessageIcon
+                                            fontSize='small'
+                                            className={classes.positionIcon}
+                                        />{" "}
+                                        content news
+                                        <Box className={classes.line}></Box>
+                                    </Grid>
+                                    {content && (
+                                        <Grid item xs={12}>
+                                            <FastField
+                                                name='content'
+                                                component={TextareaField}
+                                                currentValue={content}
+                                            />
+                                        </Grid>
+                                    )}
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        className={classes.headingAddAlias}
+                                        sx={{ marginTop: "80px" }}
+                                    >
+                                        <FilterIcon
+                                            fontSize='small'
+                                            className={classes.positionIcon}
+                                        />{" "}
+                                        upload image
+                                        <Box className={classes.line}></Box>
+                                    </Grid>
+                                    {pictures.length > 0 && (
+                                        <Grid item xs={12}>
+                                            <FastField
+                                                name='pictures'
+                                                component={UploadFileField}
+                                                currentValue={pictures}
+                                            />
+                                        </Grid>
+                                    )}
 
                                     <Button
                                         type='submit'
@@ -222,4 +283,4 @@ const EditCategory = () => {
     );
 };
 
-export default EditCategory;
+export default EditNews;
