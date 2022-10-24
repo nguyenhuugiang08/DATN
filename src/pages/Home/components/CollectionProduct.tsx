@@ -1,11 +1,12 @@
 import { Button, Container, Grid, Typography } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { Product } from "interfaces/interface";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
+import { Product } from "interfaces/interface";
+import { makeStyles } from "@mui/styles";
 import CardProduct from "components/CardProduct";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 const useStyles = makeStyles({
     heading: {
@@ -13,7 +14,6 @@ const useStyles = makeStyles({
         fontSize: "2em !important",
         lineHeight: 1.2,
         fontWeight: "600 !important",
-        textTransform: "uppercase",
     },
     title: {
         padding: "15px 16px",
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
         fontSize: "18px",
         userSelect: "none",
         position: "relative",
-        fontWeight: "bold",
+        fontWeight: 600,
 
         "&:after": {
             backgroundColor: "#cd6420",
@@ -69,14 +69,13 @@ const useStyles = makeStyles({
     },
 });
 
-const FeaturedProducts = () => {
-    const classes = useStyles();
+const CollectionProduct: React.FC = () => {
     const { dataHome } = useSelector((state: RootState) => state.others);
-
     const [isSelected, setIsSelected] = useState(0);
+    const classes = useStyles();
 
-    const listTitle = dataHome.featuredProducts?.map(
-        (product: { title: string; data: Product[] }) => product.title
+    const listTitle = dataHome.collections?.map(
+        (collection: { title: string; data: Product[] }) => collection.title
     );
 
     const handleChangeSelectedTitle = (index: number) => {
@@ -84,33 +83,23 @@ const FeaturedProducts = () => {
     };
 
     return (
-        <Container sx={{ marginTop: "30px" }}>
-            <Grid sx={{ display: "flex", alignItems: "center" }}>
-                <Typography
-                    className={classes.heading}
-                    sx={{ mr: 1 }}
-                    component={"span"}
-                    variant={"body2"}
-                >
-                    giảm sốc 50%
+        <Container>
+            <Grid xs={12} sx={{ textAlign: "center" }}>
+                <Typography component={"span"} variant={"body2"} className={classes.heading}>
+                    Bộ sưu tập xuân hè
                 </Typography>
-                <img
-                    src='https://bizweb.dktcdn.net/100/448/042/themes/876420/assets/flashsale-hot.png?1666084718503'
-                    alt='GIẢM SỐC 50%'
-                    style={{
-                        maxHeight: "55px",
-                        width: "33px",
-                        aspectRatio: "auto 33 / 15",
-                        height: "15px",
-                    }}
-                />
             </Grid>
-            <Grid container className={classes.containerTitle}>
+            <Grid2
+                container
+                columns={10}
+                spacing={2}
+                xsOffset={2}
+                sx={{ marginBottom: "30px", marginTop: "16px" }}
+            >
                 {listTitle?.map((title: string, index: number) => (
                     <Grid
                         item
-                        xs={3}
-                        xl={2}
+                        xs={2}
                         key={index}
                         className={`${classes.title} ${index === isSelected && classes.selected}`}
                         onClick={() => handleChangeSelectedTitle(index)}
@@ -118,9 +107,9 @@ const FeaturedProducts = () => {
                         {title}
                     </Grid>
                 ))}
-            </Grid>
+            </Grid2>
             <Grid container sx={{ marginBottom: "30px" }}>
-                <CardProduct products={dataHome.featuredProducts?.[isSelected].data} />
+                <CardProduct products={dataHome.collections?.[isSelected].data} />
             </Grid>
             <Grid sx={{ display: "flex", justifyContent: "center" }}>
                 <Button
@@ -139,4 +128,4 @@ const FeaturedProducts = () => {
     );
 };
 
-export default FeaturedProducts;
+export default CollectionProduct;

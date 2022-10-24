@@ -219,14 +219,16 @@ const CreateProduct = () => {
                                                 label='Product Name'
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={6}>
-                                            <FastField
-                                                name='categoryName'
-                                                component={CustomSelectField}
-                                                label='Category'
-                                                listValues={categories}
-                                            />
-                                        </Grid>
+                                        {categories.length > 0 && (
+                                            <Grid item xs={12} md={6}>
+                                                <FastField
+                                                    name='categoryName'
+                                                    component={CustomSelectField}
+                                                    label='Category'
+                                                    listValues={categories}
+                                                />
+                                            </Grid>
+                                        )}
                                         {values.sizes?.length > 0 && (
                                             <Grid item xs={12} md={6}>
                                                 <FastField

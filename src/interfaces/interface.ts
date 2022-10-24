@@ -60,6 +60,13 @@ export interface News {
 
 export interface HomeData {
     bannerUrls: string[];
+    egaFashions: [
+        {
+            categoryName: string;
+            number: string;
+            thumbnail: string;
+        }
+    ];
     news: News[];
     featuredProducts: [
         {
