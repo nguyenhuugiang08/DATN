@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Box, Typography } from "@mui/material";
+import { Grid, Box, Typography, Skeleton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Product } from "interfaces/interface";
 import { makeStyles } from "@mui/styles";
@@ -21,6 +21,7 @@ const useStyles = makeStyles({
         color: "#969696",
         letterSpacing: "1.8px",
         marginTop: "10px !important",
+        display: "block",
     },
     productName: {
         textDecoration: "none",

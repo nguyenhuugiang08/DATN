@@ -42,7 +42,7 @@ const Collections: React.FC = () => {
             <Box className={classes.collectionsHeading}>Thời Trang EGA</Box>
             <Swiper spaceBetween={30} slidesPerView={6} className='mySwiper'>
                 {dataHome.egaFashions?.map((category) => (
-                    <SwiperSlide>
+                    <SwiperSlide key={category.categoryName}>
                         <Box
                             sx={{ backgroundImage: `url(${category.thumbnail})` }}
                             className={classes.collectionsImage}

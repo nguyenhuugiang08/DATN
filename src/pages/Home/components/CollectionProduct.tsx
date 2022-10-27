@@ -84,7 +84,7 @@ const CollectionProduct: React.FC = () => {
 
     return (
         <Container>
-            <Grid xs={12} sx={{ textAlign: "center" }}>
+            <Grid sx={{ textAlign: "center" }}>
                 <Typography component={"span"} variant={"body2"} className={classes.heading}>
                     Bộ sưu tập xuân hè
                 </Typography>
