@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Box, Typography, Skeleton } from "@mui/material";
+import { Grid, Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Product } from "interfaces/interface";
 import { makeStyles } from "@mui/styles";
@@ -63,7 +63,7 @@ const CardProduct: React.FC<CardProductProps> = ({ products }) => {
         <Grid item container columns={10} spacing={2}>
             {products?.map((product) => (
                 <Grid item xs={2} key={product._id}>
-                    <Link to='/'>
+                    <Link to={`/product/${product._id}`}>
                         <Box
                             sx={{
                                 backgroundImage: `url(${product.thumbnails?.[0].url})`,
@@ -78,7 +78,7 @@ const CardProduct: React.FC<CardProductProps> = ({ products }) => {
                     >
                         {product.trademark}
                     </Typography>
-                    <Link to='/' className={classes.productName}>
+                    <Link to={`/product/${product._id}`} className={classes.productName}>
                         <Typography>{product.name}</Typography>
                     </Link>
                     <Typography

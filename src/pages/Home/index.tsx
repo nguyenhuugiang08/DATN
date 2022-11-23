@@ -5,7 +5,8 @@ import Banner from "./components/Banner";
 import CollectionProduct from "./components/CollectionProduct";
 import Collections from "./components/Collections";
 import FeaturedProducts from "./components/FeaturedProducts";
-import News from "./components/News";
+import Image from "./components/Image";
+import NewsHome from "./components/NewsHome";
 import Policies from "./components/Policies";
 
 const Home: React.FC = () => {
@@ -21,8 +22,9 @@ const Home: React.FC = () => {
             <Policies/>
             <Collections/>
             <FeaturedProducts/>
+            <Image/>
             <CollectionProduct/>
-            <News/>
+            <NewsHome/>
         </>
     );
 };
