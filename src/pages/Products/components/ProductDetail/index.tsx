@@ -23,7 +23,7 @@ const ProductDetail: React.FC = () => {
                 <Grid item xs={12} md={6}>
                     <Box
                         sx={{
-                            backgroundImage: `url(${product?.thumbnails[0].url})`,
+                            backgroundImage: `url(${product?.thumbnails?.[0].url})`,
                             backgroundSize: "contain",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",

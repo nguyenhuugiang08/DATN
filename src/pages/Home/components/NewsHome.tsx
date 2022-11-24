@@ -7,7 +7,6 @@ import { RootState } from "redux/store";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { News } from "interfaces/interface";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { createTrue } from "typescript";
 
 const useStyles = makeStyles({
     newsTitle: {
