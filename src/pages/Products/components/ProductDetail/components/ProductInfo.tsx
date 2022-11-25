@@ -22,6 +22,12 @@ interface ProductInfoProps {
     product: Product;
 }
 
+interface Info {
+    size: string;
+    color: string;
+    quantity: string | number;
+}
+
 const useStyles = makeStyles({
     productName: {
         fontWeight: 700,
@@ -82,14 +88,7 @@ const useStyles = makeStyles({
         },
     },
     productSize: {
-        padding: "10px",
-        height: "30px",
-        border: "1px solid #cd6420",
-        borderRadius: "4px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        marginRight: "10px",
+        borderColor: "#cd6420 !important",
         position: "relative",
         overflow: "hidden",
 
@@ -122,6 +121,14 @@ const useStyles = makeStyles({
             zIndex: 1,
         },
     },
+    productQuantity: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "12px 16px",
+        border: "1px solid #cccccc",
+        borderRadius: "4px",
+    },
     btnBuy: {
         width: "100%",
         backgroundColor: "#cd6420 !important",
@@ -146,7 +153,7 @@ const useStyles = makeStyles({
 });
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
-    const [info, setInfo] = useState({
+    const [info, setInfo] = useState<Info>({
         size: product?.sizes?.[0],
         color: product?.colors?.[0],
         quantity: 1,
@@ -156,6 +163,37 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
     const { size, color, quantity } = info;
     const classes = useStyles();
+
+    const handleDecreaseQuantity = () => {
+        if (quantity > 1) {
+            setInfo({ ...info, quantity: (quantity as number) - 1 });
+        } else {
+            setInfo({ ...info, quantity: 1 });
+        }
+    };
+
+    const handleIncreaseQuantity = () => {
+        if (quantity < Number(product?.quantity)) {
+            setInfo({ ...info, quantity: (quantity as number) + 1 });
+        } else {
+            setInfo({ ...info, quantity: Number(product?.quantity) });
+        }
+    };
+
+    const handleChangeQuantity = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        if (e.target.value !== "") {
+            const inputQuantity = Number(e.target.value);
+            if (inputQuantity <= 0 || isNaN(inputQuantity)) {
+                setInfo({ ...info, quantity: 1 });
+            } else if (inputQuantity < Number(product?.quantity)) {
+                setInfo({ ...info, quantity: inputQuantity });
+            } else {
+                setInfo({ ...info, quantity: Number(product?.quantity) });
+            }
+        } else {
+            setInfo({ ...info, quantity: e.target.value });
+        }
+    };
 
     return (
         <div>
@@ -253,14 +291,27 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                         <Box
                             key={index}
                             onClick={() => setInfo({ ...info, size: size })}
-                            className={classes.productSize}
+                            className={`${
+                                index === product?.sizes?.indexOf(info.size) && classes.productSize
+                            }`}
+                            sx={{
+                                padding: "10px",
+                                height: "30px",
+                                border: "1px solid #cccccc",
+                                borderRadius: "4px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginRight: "10px",
+                                cursor: "pointer",
+                            }}
                         >
                             {size}
                         </Box>
                     ))}
                 </Grid>
             </Box>
-            <Box>
+            <Box sx={{ marginBottom: "16px" }}>
                 <span style={{ marginBottom: "8px", display: "block" }}>
                     <strong>Màu sắc: </strong>
                     {color}
@@ -274,12 +325,21 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                 </Grid>
             </Box>
             <Grid container>
-                <Box>
-                    <RemoveIcon fontSize='small' />
-                    {quantity}
-                    <AddIcon fontSize='small' />
+                <Box className={classes.productQuantity}>
+                    <RemoveIcon fontSize='small' onClick={handleDecreaseQuantity} />
+                    <input
+                        style={{
+                            width: "80px",
+                            border: "none",
+                            outline: "none",
+                            textAlign: "center",
+                        }}
+                        value={quantity}
+                        onChange={(e) => handleChangeQuantity(e)}
+                    />
+                    <AddIcon fontSize='small' onClick={handleIncreaseQuantity} />
                 </Box>
-                <Button color='warning' variant='outlined'>
+                <Button color='warning' variant='outlined' sx={{ ml: 2, flex: 1 }}>
                     thêm vào giỏ
                 </Button>
             </Grid>
@@ -327,7 +387,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             </Box>
             <Box>
                 <ListItemButton onClick={() => setIsOpen(!isOpen)}>
-                    <ListItemText primary='Mô tả sản phẩm' />
+                    <ListItemText primary='Chính sách giao hàng' />
                     {isOpen ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
                 <Collapse in={isOpen} timeout='auto' unmountOnExit>
