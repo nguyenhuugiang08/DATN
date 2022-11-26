@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { getProductById } from "redux/productSlice";
 import { RootState, useAppDispatch } from "redux/store";
 import ProductInfo from "./components/ProductInfo";
+import ProductPolicies from "./components/ProductPolicies";
+import ProductReturnPolicies from "./components/ProductReturnPolicies";
 
 const ProductDetail: React.FC = () => {
     const { id } = useParams();
@@ -33,6 +35,8 @@ const ProductDetail: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <ProductInfo product={product} />
+                    <ProductPolicies/>
+                    <ProductReturnPolicies/>
                 </Grid>
             </Grid>
         </Container>
