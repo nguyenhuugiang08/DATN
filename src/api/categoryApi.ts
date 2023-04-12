@@ -3,13 +3,11 @@ import { AxiosInstance } from "axios";
 
 export interface DataCreateCategory {
     name: string;
-    aliasName: string;
 }
 
 export interface DataUpdateCategory {
     id: string | undefined;
     name: string;
-    aliasName: string;
 }
 
 const categoryApi = {

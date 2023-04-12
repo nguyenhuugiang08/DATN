@@ -13,7 +13,6 @@ import categoryApi from "api/categoryApi";
 import SelectField from "customs/SelectFieldDefaultValue";
 import { RootState, useAppDispatch } from "redux/store";
 import { useSelector } from "react-redux";
-import { getAllAlias } from "redux/aliasSlice";
 import useAxios from "hooks/useAxios";
 
 const useStyles = makeStyles({
@@ -65,8 +64,6 @@ const EditCategory = () => {
     const [aliasName, setAliasName] = useState("");
 
     const { categories } = useSelector((state: RootState) => state.category);
-    const { aliases } = useSelector((state: RootState) => state.alias);
-
     const dispatch = useAppDispatch();
     const axiosRefresh = useAxios();
 
@@ -85,11 +82,6 @@ const EditCategory = () => {
         getCategory();
     }, [id]);
 
-
-    useEffect(() => {
-        dispatch(getAllAlias());
-    }, [dispatch]);
-
     const initialValues = {
         name: "",
         aliasName: "",
@@ -102,7 +94,10 @@ const EditCategory = () => {
             .test({
                 test(value, ctx) {
                     const listNameCategories = categories
-                        ?.filter((category) => category.name.toLowerCase() !== nameCategory?.toLowerCase())
+                        ?.filter(
+                            (category) =>
+                                category.name.toLowerCase() !== nameCategory?.toLowerCase()
+                        )
                         .map((category) => category.name.toLowerCase());
 
                     if (listNameCategories.includes(value?.toLowerCase() as string)) {
@@ -165,24 +160,12 @@ const EditCategory = () => {
                             {(formikProps) => (
                                 <Form>
                                     <Grid container spacing={4}>
-                                        {aliasName && (
-                                            <Grid item xs={12} md={6}>
-                                                <FastField
-                                                    name='aliasName'
-                                                    component={SelectField}
-                                                    label='Alias'
-                                                    currentValue={aliasName}
-                                                    listValues={aliases}
-                                                />
-                                            </Grid>
-                                        )}
-
                                         {nameCategory && (
                                             <Grid item xs={12} md={6}>
                                                 <FastField
                                                     name={"name"}
                                                     component={InputFieldDefaultValue}
-                                                    label={"Category Name"}
+                                                    label={"Tên danh mục"}
                                                     currentValue={nameCategory}
                                                 />
                                             </Grid>

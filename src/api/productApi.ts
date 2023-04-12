@@ -11,7 +11,7 @@ export interface DataCreateProduct {
 }
 
 const productApi = {
-    getAllProduct: () => {
+    getProductByFilter: () => {
         const url = "/product";
         return axiosClient.get(url);
     },

@@ -8,8 +8,9 @@ import { CheckboxProps } from "@mui/material/Checkbox";
 interface CustomInputProps {
     type?: string;
     label?: string;
-    currentValue?: string[];
-    listValues?: string[];
+    currentValue?: any[];
+    listValues?: any[];
+    showValue: string;
 }
 
 const BpIcon = styled("span")(({ theme }) => ({
@@ -78,6 +79,7 @@ const CheckboxField: React.FC<CustomInputProps & FieldProps> = ({
     type = "text",
     currentValue,
     listValues,
+    showValue,
     ...props
 }) => {
     const { name } = field;
@@ -90,13 +92,16 @@ const CheckboxField: React.FC<CustomInputProps & FieldProps> = ({
     }, [currentValue]);
 
     const handleChangeCheckboxField = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const index = form.values[`${name}`]?.indexOf(e.target.value);
+        const index = form.values[`${name}`]?.map((item: any) => item._id)?.indexOf(e.target.value);
 
         if (index === -1) {
-            setValuesCheckboxes([...form.values[`${name}`], e.target.value]);
+            setValuesCheckboxes([
+                ...form.values[`${name}`],
+                listValues?.find((option) => option._id === e.target.value),
+            ]);
         } else {
             setValuesCheckboxes(
-                form.values[`${name}`].filter((color: string) => color !== e.target.value)
+                form.values[`${name}`].filter((option: any) => option._id !== e.target.value)
             );
         }
     };
@@ -116,13 +121,15 @@ const CheckboxField: React.FC<CustomInputProps & FieldProps> = ({
                             <BpCheckbox
                                 size='small'
                                 {...field}
-                                value={listValues[index]}
+                                value={value["_id"]}
                                 onChange={handleChangeCheckboxField}
                                 id={name}
-                                checked={form.values[`${name}`]?.includes(value)}
+                                checked={form.values[`${name}`]
+                                    .map((item: any) => item._id)
+                                    ?.includes(value["_id"])}
                             />
                         }
-                        label={value}
+                        label={value[`${showValue}`]}
                     />
                 ))}
             </FormGroup>

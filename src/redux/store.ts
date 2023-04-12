@@ -4,19 +4,21 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./authSlice";
 import productReducer from "./productSlice";
-import aliasReducer from "./aliasSlice";
 import categoryReducer from "./categorySlice";
 import newsReducer from "./newsSlice";
 import othersReducer from "./othersSlice";
+import sizeReducer from "./sizeSlice";
+import colorReducer from "./colorSlice";
 import thunk from "redux-thunk";
 
 const rootReducer = combineReducers({
     auth: authReducer,
     product: productReducer,
-    alias: aliasReducer,
     category: categoryReducer,
     news: newsReducer,
     others: othersReducer,
+    size: sizeReducer,
+    color: colorReducer,
 });
 
 const persistConfig = {

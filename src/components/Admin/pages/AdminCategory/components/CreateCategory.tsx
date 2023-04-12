@@ -13,7 +13,6 @@ import Roadmap from "components/Admin/components/Roadmap";
 import categoryApi from "api/categoryApi";
 import SelectField from "customs/SelectField";
 import { useEffect } from "react";
-import { getAllAlias } from "redux/aliasSlice";
 import useAxios from "hooks/useAxios";
 
 const useStyles = makeStyles({
@@ -64,13 +63,8 @@ const CreateCategory = () => {
     const classes = useStyles();
 
     const { categories } = useSelector((state: RootState) => state.category);
-    const { aliases } = useSelector((state: RootState) => state.alias);
     const dispatch = useAppDispatch();
     const axiosRefresh = useAxios();
-
-    useEffect(() => {
-        dispatch(getAllAlias());
-    }, [dispatch]);
 
     const initialValues = {
         name: "",
@@ -148,18 +142,9 @@ const CreateCategory = () => {
                                     <Grid container spacing={4}>
                                         <Grid item xs={12} md={6}>
                                             <FastField
-                                                name='aliasName'
-                                                component={SelectField}
-                                                label='Alias Name'
-                                                listValues={aliases}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} md={6}>
-                                            <FastField
                                                 name={"name"}
                                                 component={InputField}
-                                                label={"Category Name"}
+                                                label={"Tên danh mục"}
                                             />
                                         </Grid>
                                     </Grid>

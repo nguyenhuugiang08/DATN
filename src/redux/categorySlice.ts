@@ -11,7 +11,7 @@ interface ValidationErrors {
 export const getAllCategory = createAsyncThunk<Category[]>("category/getAll", async () => {
     try {
         const response = await categoryApi.getAllCategories();
-        return response.data?.listCategories;
+        return response.data?.categories;
     } catch (err) {
         let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
         if (!error.response) {
@@ -26,7 +26,7 @@ export const getTrashCategory = createAsyncThunk<Category[], AxiosInstance>(
     async (axiosRefresh: AxiosInstance) => {
         try {
             const response = await categoryApi.getTrashCategory(axiosRefresh);
-            return response.data?.listCategories;
+            return response.data?.categories;
         } catch (err) {
             let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
             if (!error.response) {

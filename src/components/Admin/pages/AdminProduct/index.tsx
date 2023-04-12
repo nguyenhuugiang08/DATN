@@ -19,9 +19,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Product, Thumbnail } from "interfaces/interface";
 import { toast } from "react-toastify";
 import { makeStyles } from "@mui/styles";
-import { getAllProducts } from "redux/productSlice";
+import { getProductByFilters } from "redux/productSlice";
 import productApi from "api/productApi";
 import useAxios from "hooks/useAxios";
+import { formatPrice } from "utilities/formatPrice";
 
 const useStyles = makeStyles({
     containerBox: {
@@ -49,6 +50,7 @@ const useStyles = makeStyles({
         textDecoration: "none",
         color: "#2f80ed",
         fontSize: "14px",
+        marginLeft: "16px",
     },
     thumbnailProduct: {
         width: "80px",
@@ -72,12 +74,13 @@ const AdminCategory = () => {
     const columns: GridColDef[] = [
         {
             field: "thumbnails",
-            headerName: "Photo",
+            headerName: "Ảnh sản phẩm",
             width: 180,
+            headerClassName: "MuiDataGrid-columnHeaders--product",
             renderCell: (params) => {
                 const listThumbnails: Thumbnail[] = params.value;
                 return (
-                    <div>
+                    <>
                         {listThumbnails?.map(
                             (thumbnail: Thumbnail, index: number) =>
                                 index === 0 && (
@@ -86,27 +89,34 @@ const AdminCategory = () => {
                                         alt='thumbnail'
                                         key={thumbnail._id}
                                         className={classes.thumbnailProduct}
-                                        />
-                                        )
-                                        )}
-                    </div>
+                                    />
+                                )
+                        )}
+                    </>
                 );
             },
         },
-        { field: "_id", headerName: "ID", width: 240 },
-        { field: "trademark", headerName: "Trademark", width: 160 },
-        { field: "name", headerName: "Name", width: 200 },
-        { field: "quantity", headerName: "Quantity", width: 160 },
-        { field: "price", headerName: "Price", width: 120 },
+        { field: "_id", headerName: "Mã sản phẩm", width: 240 },
+        { field: "name", headerName: "Tên sản phẩm", width: 400 },
+        {
+            field: "quantity",
+            headerName: "Số lượng",
+            width: 160,
+            valueFormatter: (params) => formatPrice(params?.value),
+        },
+        {
+            field: "price",
+            headerName: "Giá bán",
+            width: 120,
+            valueFormatter: (params) => formatPrice(params?.value),
+        },
         {
             field: "action",
-            headerName: "Action",
+            headerName: "Hành động",
             sortable: false,
-            width: 180,
+            width: 100,
             renderCell: (params) => {
-                const onClickEditProduct = (
-                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                ) => {
+                const onClickEditProduct = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
                     e.stopPropagation();
 
                     const api: GridApi = params.api;
@@ -130,7 +140,7 @@ const AdminCategory = () => {
                     api.getAllColumns()
                         .filter((c) => c.field !== "__check__" && !!c)
                         .forEach((c) => (thisRow[c.field] = params.getValue(params.id, c.field)));
-                    
+
                     const product = {} as Product;
                     product["_id"] = thisRow["_id"]!.toString();
                     product["name"] = thisRow["name"]!.toString();
@@ -154,7 +164,7 @@ const AdminCategory = () => {
     ];
 
     useEffect(() => {
-        dispatch(getAllProducts());
+        dispatch(getProductByFilters());
     }, [dispatch]);
 
     const handleClose = () => {
@@ -182,7 +192,7 @@ const AdminCategory = () => {
                     },
                 },
             })
-            .then(() => dispatch(getAllProducts()));
+            .then(() => dispatch(getProductByFilters()));
     };
 
     return (
@@ -191,13 +201,13 @@ const AdminCategory = () => {
                 <Typography className={classes.headingAlias}>
                     products
                     <Link to='trash-products' className={classes.linkTrash}>
-                        Trash
+                        Thùng rác
                     </Link>
                 </Typography>
                 <Button color='success' variant='contained'>
                     <Link to='create-product' className={classes.linkAddAlias}>
                         <CreateNewFolderIcon sx={{ mr: 1 }} />
-                        create
+                        Thêm mới
                     </Link>
                 </Button>
             </Box>
@@ -206,6 +216,7 @@ const AdminCategory = () => {
                     className='datagrid-alias'
                     getRowId={(row) => row._id}
                     rows={products}
+                    loading={products.length === 0}
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[10]}

@@ -9,14 +9,10 @@ import ForgotPassword from "components/ForgotPassword";
 import ResetPassword from "components/ResetPassword";
 import qs from "query-string";
 import AdminProduct from "components/Admin/pages/AdminProduct";
-import AdminAlias from "components/Admin/pages/AdminAlias";
 import AdminCategory from "components/Admin/pages/AdminCategory";
 import AdminUser from "components/Admin/pages/AdminUser";
 import AdminNews from "components/Admin/pages/AdminNews";
 import AdminOrder from "components/Admin/pages/AdminOrder";
-import EditAlias from "components/Admin/pages/AdminAlias/components/EditAlias";
-import CreateAlias from "components/Admin/pages/AdminAlias/components/CreateAlias";
-import TrashAlias from "components/Admin/pages/AdminAlias/components/TrashAlias";
 import EditCategory from "components/Admin/pages/AdminCategory/components/EditCategory";
 import CreateCategory from "components/Admin/pages/AdminCategory/components/CreateCategory";
 import TrashCategries from "components/Admin/pages/AdminCategory/components/TrashCategries";
@@ -99,28 +95,6 @@ const RouterApp: React.FC = () => {
             ],
         },
         {
-            path: "admin/alias",
-            element: <AdminLayout />,
-            children: [
-                {
-                    path: "/admin/alias",
-                    element: <AdminAlias />,
-                },
-                {
-                    path: "edit-alias/:id",
-                    element: <EditAlias />,
-                },
-                {
-                    path: "create-alias",
-                    element: <CreateAlias />,
-                },
-                {
-                    path: "trash-alias",
-                    element: <TrashAlias />,
-                },
-            ],
-        },
-        {
             path: "admin/categories",
             element: <AdminLayout />,
             children: [
@@ -183,6 +157,20 @@ const RouterApp: React.FC = () => {
                 {
                     path: "trash-news",
                     element: <TrashNews />,
+                },
+            ],
+        },
+        {
+            path: "admin/users",
+            element: <AdminLayout />,
+            children: [
+                {
+                    path: "/admin/users",
+                    element: <AdminUser />,
+                },
+                {
+                    path: "create-user",
+                    element: <CreateCategory />,
                 },
             ],
         },

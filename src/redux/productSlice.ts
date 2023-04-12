@@ -8,9 +8,9 @@ interface ValidationErrors {
     field_errors: Record<string, string>;
 }
 
-export const getAllProducts = createAsyncThunk<Product[]>("product/getAll", async () => {
+export const getProductByFilters = createAsyncThunk<Product[]>("product/getAll", async () => {
     try {
-        const response = await productApi.getAllProduct();
+        const response = await productApi.getProductByFilter();
         return response.data?.listProducts;
     } catch (err) {
         let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
@@ -72,10 +72,10 @@ const productSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(getAllProducts.fulfilled, (state, { payload }) => {
+        builder.addCase(getProductByFilters.fulfilled, (state, { payload }) => {
             state.products = [...payload];
         });
-        builder.addCase(getAllProducts.rejected, (state, action) => {
+        builder.addCase(getProductByFilters.rejected, (state, action) => {
             if (action.payload) {
                 state.error = "Have got an exception!";
             } else {

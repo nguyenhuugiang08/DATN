@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "../interfaces/interface";
-import type { AxiosError } from "axios";
+import type { AxiosError, AxiosInstance } from "axios";
 import authApi from "../api/authApi";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -38,14 +38,32 @@ export const loginUser = createAsyncThunk<
     }
 });
 
+export const getUsers = createAsyncThunk<User[], AxiosInstance>(
+    "user/getUsers",
+    async (axiosRefresh: AxiosInstance) => {
+        try {
+            const response = await authApi.getUsers(axiosRefresh);
+            return response.data?.users;
+        } catch (err) {
+            let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
+            if (!error.response) {
+                throw err;
+            }
+            return error.response.data;
+        }
+    }
+);
+
 interface UsersState {
     error: string | null | undefined;
     entities: User[];
+    users: User[];
 }
 
 const initialState = {
     entities: [],
     error: null,
+    users: [],
 } as UsersState;
 
 const authSlice = createSlice({
@@ -54,7 +72,7 @@ const authSlice = createSlice({
     reducers: {
         loginSuccess: (state, action) => {
             state.entities = [action.payload];
-        }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(loginUser.fulfilled, (state, { payload }) => {
@@ -63,6 +81,17 @@ const authSlice = createSlice({
         builder.addCase(loginUser.rejected, (state, action) => {
             if (action.payload) {
                 state.error = action.payload.errorMessage;
+            } else {
+                state.error = action.error.message;
+            }
+        });
+
+        builder.addCase(getUsers.fulfilled, (state, { payload }) => {
+            state.users = [...payload];
+        });
+        builder.addCase(getUsers.rejected, (state, action) => {
+            if (action.payload) {
+                state.error = "Have got an exception!";
             } else {
                 state.error = action.error.message;
             }

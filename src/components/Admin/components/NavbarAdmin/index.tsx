@@ -18,22 +18,14 @@ const NavbarAdmin = () => {
                     sx={{ color: "#2ECD99" }}
                     className='navbar-admin-header__icon'
                 />
-                <Typography className='navbar-admin-header__title'>Ega-Style</Typography>
+                <Typography className='navbar-admin-header__title'>HuuGiang Shop</Typography>
             </Box>
             <Typography className='navbar-admin-main'>MAIN</Typography>
             <Box className='navbar-admin-list'>
                 <Link to='/admin' className='navbar-admin-list__link'>
                     <ListItemButton>
                         <DashboardIcon sx={{ fontSize: "18px", marginRight: "20px" }} />
-                        <ListItemText primary='Dashboard' />
-                    </ListItemButton>
-                </Link>
-            </Box>
-            <Box className='navbar-admin-list'>
-                <Link to='/admin/alias' className='navbar-admin-list__link'>
-                    <ListItemButton>
-                        <SubtitlesIcon sx={{ fontSize: "18px", marginRight: "20px" }} />
-                        <ListItemText primary='Alias' />
+                        <ListItemText primary='Trang  chủ' />
                     </ListItemButton>
                 </Link>
             </Box>
@@ -41,7 +33,7 @@ const NavbarAdmin = () => {
                 <Link to='/admin/categories' className='navbar-admin-list__link'>
                     <ListItemButton>
                         <CategoryIcon sx={{ fontSize: "18px", marginRight: "20px" }} />
-                        <ListItemText primary='Categories' />
+                        <ListItemText primary='Quản lý danh mục' />
                     </ListItemButton>
                 </Link>
             </Box>
@@ -49,15 +41,15 @@ const NavbarAdmin = () => {
                 <Link to='/admin/products' className='navbar-admin-list__link'>
                     <ListItemButton>
                         <DashboardIcon sx={{ fontSize: "18px", marginRight: "20px" }} />
-                        <ListItemText primary='Products' />
+                        <ListItemText primary='Quản lý sản phẩm' />
                     </ListItemButton>
                 </Link>
             </Box>
             <Box className='navbar-admin-list'>
-                <Link to='/admin/user' className='navbar-admin-list__link'>
+                <Link to='/admin/users' className='navbar-admin-list__link'>
                     <ListItemButton>
                         <GroupIcon sx={{ fontSize: "18px", marginRight: "20px" }} />
-                        <ListItemText primary='Users' />
+                        <ListItemText primary='Quản lý người dùng' />
                     </ListItemButton>
                 </Link>
             </Box>
@@ -73,7 +65,7 @@ const NavbarAdmin = () => {
                 <Link to='/admin/orders' className='navbar-admin-list__link'>
                     <ListItemButton>
                         <SellIcon sx={{ fontSize: "18px", marginRight: "20px" }} />
-                        <ListItemText primary='Orders' />
+                        <ListItemText primary='Quản lý đơn hàng' />
                     </ListItemButton>
                 </Link>
             </Box>

@@ -12,7 +12,6 @@ export interface Picture {
 
 export interface Product {
     _id?: string;
-    trademark: string;
     name: string;
     price: string;
     sizes: string[];
@@ -21,7 +20,7 @@ export interface Product {
     discount: string;
     quantity: string;
     thumbnails: Thumbnail[];
-    categoryName?: string;
+    category?: string;
     categoryId?: string;
 }
 
@@ -46,9 +45,7 @@ export interface Alias {
 export interface Category {
     _id: string;
     name: string;
-    aliasId: string;
     deleted: boolean;
-    aliasName?: string;
 }
 
 export interface News {
@@ -60,24 +57,16 @@ export interface News {
 
 export interface HomeData {
     bannerUrls: string[];
-    egaFashions: [
-        {
-            categoryName: string;
-            number: string;
-            thumbnail: string;
-        }
-    ];
-    news: News[];
-    featuredProducts: [
-        {
-            title: string;
-            data: Product[];
-        }
-    ];
-    collections: [
-        {
-            title: string;
-            data: Product[];
-        }
-    ];
+    shirtProducts: Product[];
+}
+
+export interface Size {
+    _id: string;
+    sizeName: string;
+}
+
+export interface Color {
+    _id: string;
+    colorName: string;
+    thumbnail: string;
 }

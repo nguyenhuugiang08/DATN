@@ -1,3 +1,4 @@
+import { AxiosInstance } from "axios";
 import axiosClient from "./axiosClient";
 
 export interface DataLogin {
@@ -25,7 +26,11 @@ const authApi = {
     refreshToken: () => {
         const url = `${process.env.REACT_APP_API_URL}/auth/refresh`;
         return axiosClient.post(url);
-    }
+    },
+    getUsers: (axios: AxiosInstance) => {
+        const url = "/auth";
+        return axios.get(url);
+    },
 };
 
 export default authApi;

@@ -110,7 +110,7 @@ const UploadFileField: React.FC<CustomInputProps & FieldProps> = ({
             </Grid>
             <label className={classes.uploadBtn}>
                 <FileUploadIcon fontSize='small' className={classes.uploadIcon} />
-                Upload New Image
+                Tải ảnh mới
                 <input
                     type='file'
                     multiple={true}

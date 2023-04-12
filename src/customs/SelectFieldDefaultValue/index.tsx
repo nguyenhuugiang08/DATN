@@ -34,9 +34,7 @@ const CustomSelectFieldDefaultValue: React.FC<CustomInputProps & FieldProps> = (
 
     return (
         <FormGroup>
-            <label className='login-form-label'>
-                {props.label}
-            </label>
+            <label className='login-form-label'>{props.label}</label>
             <NativeSelect
                 inputProps={{
                     id: name,
@@ -47,7 +45,7 @@ const CustomSelectFieldDefaultValue: React.FC<CustomInputProps & FieldProps> = (
                 variant='outlined'
             >
                 {listValues?.map((value) => (
-                    <option value={value.name} key={value._id}>
+                    <option value={value._id} key={value._id}>
                         {value.name}
                     </option>
                 ))}

@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 const Footer: React.FC = (): JSX.Element => {
     return (
-        <Container className={`footer`} maxWidth={"xl"}>
+        <Container className={`footer`} maxWidth="xxl">
             <Container>
                 <Grid container>
                     <Grid item xs={12} md={6} xl={3} className='footer-block'>

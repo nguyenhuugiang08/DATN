@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexWrap: "wrap",
             fontSize: "14px",
             backgroundColor: "#fff",
-            padding: "15px",
+            padding: " 6px 15px",
             justifyContent: "space-between",
             alignItems: "center",
             borderBottom: "1px solid #dedede",
@@ -49,9 +49,6 @@ const HeaderAdmin: React.FC = () => {
     return (
         <div className={classes.container}>
             <MenuIcon sx={{ color: "#878787", marginRight: "25px" }} />
-            <Box sx={{ width: 320 }}>
-                <TextField fullWidth placeholder='Search' color='info' size='small' />
-            </Box>
             <Box className={classes.headerRight}>
                 <SettingsIcon sx={{ color: "#878787", marginX: "9px" }} />
                 <AppsIcon sx={{ color: "#878787", marginX: "9px" }} />

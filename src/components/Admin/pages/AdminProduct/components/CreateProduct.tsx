@@ -18,10 +18,12 @@ import TextareaField from "customs/TextareaField";
 import CheckboxField from "customs/CheckboxField";
 import FilterIcon from "@mui/icons-material/Filter";
 import UploadFileField from "customs/UploadFileField";
-import { Thumbnail } from "interfaces/interface";
+import { Color, Size, Thumbnail } from "interfaces/interface";
 import CustomSelectField from "customs/SelectField";
 import { getFileFromUrl } from "utilities/getFileFromUrl";
 import useAxios from "hooks/useAxios";
+import { getSizes } from "redux/sizeSlice";
+import { getColors } from "redux/colorSlice";
 
 const useStyles = makeStyles({
     containerAddBox: {
@@ -63,24 +65,24 @@ const useStyles = makeStyles({
         marginTop: "10px",
         marginBottom: "35px",
     },
+    titleForm: {
+        fontWeight: "700 !important",
+        color: "var(--primary-color)",
+        fontSize: "24px !important",
+    },
 });
 
 const CreateProduct = () => {
     const navigate = useNavigate();
     const [values, setValues] = useState({
-        sizes: [] as string[],
-        colors: [] as string[],
+        sizes: [] as Size[],
+        colors: [] as Color[],
     });
-
-    useLayoutEffect(() => {
-        setValues({ ...values, sizes: ["S"], colors: ["Đỏ"] });
-    }, []);
-
-    const listColors = ["Đỏ", "Cam", "Vàng", "Tím", "Xám", "Trắng", "Đen"];
-    const listSizes = ["S", "M", "L"];
 
     const { products } = useSelector((state: RootState) => state.product);
     const { categories } = useSelector((state: RootState) => state.category);
+    const { sizes } = useSelector((state: RootState) => state.size);
+    const { colors } = useSelector((state: RootState) => state.color);
 
     const dispatch = useAppDispatch();
     const axiosRefresh = useAxios();
@@ -91,8 +93,19 @@ const CreateProduct = () => {
         dispatch(getAllCategory());
     }, [dispatch]);
 
+    useEffect(() => {
+        dispatch(getSizes());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(getColors());
+    }, [dispatch]);
+
+    useLayoutEffect(() => {
+        setValues({ ...values, sizes: [sizes[0]], colors: [colors[0]] });
+    }, []);
+
     const initialValues = {
-        trademark: "",
         name: "",
         price: "",
         sizes: [] as string[],
@@ -101,11 +114,10 @@ const CreateProduct = () => {
         quantity: "",
         thumbnails: [] as Thumbnail[],
         colors: [],
-        categoryName: "",
+        category: "",
     };
 
     const validationSchema = yup.object().shape({
-        trademark: yup.string().required("Vui lòng nhập trường này"),
         name: yup
             .string()
             .required("Vui lòng nhập trường này")
@@ -124,7 +136,7 @@ const CreateProduct = () => {
         price: yup.string().required("Vui lòng nhập trường này"),
         sizes: yup
             .array()
-            .of(yup.string().required())
+            .of(yup.object().required())
             .min(1, "Vui lòng chọn size cho product")
             .nullable(),
         description: yup.string().required("Vui lòng nhập trường này"),
@@ -136,8 +148,8 @@ const CreateProduct = () => {
                 return value[0].size <= 2000000;
             })
         ),
-        colors: yup.array().of(yup.string()).min(1, "Vui lòng chọn ít nhất 1 màu"),
-        categoryName: yup.string().required("Vui lòng chọn category cho product"),
+        colors: yup.array().of(yup.object().required()).min(1, "Vui lòng chọn ít nhất 1 màu"),
+        category: yup.string().required("Vui lòng chọn category cho product"),
     });
 
     const handleCancelEdit = () => {
@@ -147,14 +159,16 @@ const CreateProduct = () => {
     return (
         <div>
             <Box className={classes.containerAddBox}>
-                <Typography className={classes.headingAddAlias}>create product</Typography>
+                <Typography className={`${classes.headingAddAlias} ${classes.titleForm}`}>
+                    Thêm sản phẩm
+                </Typography>
                 <Roadmap />
             </Box>
             <Box className={classes.boxContent}>
                 <Grid container>
                     <Grid item xs={12} className={classes.headingAddAlias}>
-                        <InfoOutlinedIcon fontSize='small' className={classes.positionIcon} /> about
-                        product
+                        <InfoOutlinedIcon fontSize='small' className={classes.positionIcon} />{" "}
+                        <span>Thông tin sản phẩm</span>
                         <Box className={classes.line}></Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -162,21 +176,24 @@ const CreateProduct = () => {
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             onSubmit={async (values) => {
+                                console.log(values);
                                 const formData = new FormData();
-                                console.log(values.thumbnails);
                                 for (let thumbnail of values.thumbnails) {
                                     const file = await getFileFromUrl(thumbnail.url, "images");
                                     formData.append("thumbnails", file);
                                 }
-                                formData.append("trademark", values.trademark);
                                 formData.append("name", values.name);
-                                formData.append("categoryName", values.categoryName);
+                                formData.append("category", values.category);
                                 formData.append("description", values.description);
                                 formData.append("discount", values.discount);
                                 formData.append("price", values.price);
                                 formData.append("quantity", values.quantity);
-                                values.colors?.forEach((color) => formData.append("colors", color));
-                                values.sizes?.forEach((size) => formData.append("sizes", size));
+                                values.colors?.forEach((color) =>
+                                    formData.append("colors", JSON.stringify(color))
+                                );
+                                values.sizes?.forEach((size) =>
+                                    formData.append("sizes", JSON.stringify(size))
+                                );
 
                                 const createProduct = async () => {
                                     try {
@@ -207,36 +224,18 @@ const CreateProduct = () => {
                                     <Grid container spacing={4}>
                                         <Grid item xs={12} md={6}>
                                             <FastField
-                                                name={"trademark"}
-                                                component={InputField}
-                                                label={"Trademark Name"}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} md={6}>
-                                            <FastField
                                                 name='name'
                                                 component={InputField}
-                                                label='Product Name'
+                                                label='Tên sản phẩm'
                                             />
                                         </Grid>
                                         {categories.length > 0 && (
                                             <Grid item xs={12} md={6}>
                                                 <FastField
-                                                    name='categoryName'
+                                                    name='category'
                                                     component={CustomSelectField}
-                                                    label='Category'
+                                                    label='Danh mục'
                                                     listValues={categories}
-                                                />
-                                            </Grid>
-                                        )}
-                                        {values.sizes?.length > 0 && (
-                                            <Grid item xs={12} md={6}>
-                                                <FastField
-                                                    name='sizes'
-                                                    component={CheckboxField}
-                                                    currentValue={values.sizes}
-                                                    listValues={listSizes}
-                                                    label='Sizes'
                                                 />
                                             </Grid>
                                         )}
@@ -244,21 +243,33 @@ const CreateProduct = () => {
                                             <FastField
                                                 name='price'
                                                 component={InputField}
-                                                label='Price'
+                                                label='Giá bán'
                                             />
                                         </Grid>
+                                        {values.sizes?.length > 0 && (
+                                            <Grid item xs={12} md={6}>
+                                                <FastField
+                                                    name='sizes'
+                                                    component={CheckboxField}
+                                                    currentValue={values.sizes}
+                                                    listValues={sizes}
+                                                    label='Kích cỡ'
+                                                    showValue='sizeName'
+                                                />
+                                            </Grid>
+                                        )}
                                         <Grid item xs={12} md={6}>
                                             <FastField
                                                 name='discount'
                                                 component={InputField}
-                                                label='Discount'
+                                                label='Giảm giá'
                                             />
                                         </Grid>
                                         <Grid item xs={12} md={6}>
                                             <FastField
                                                 name='quantity'
                                                 component={InputField}
-                                                label='Quantity'
+                                                label='Số lượng'
                                             />
                                         </Grid>
                                         {values.colors?.length > 0 && (
@@ -267,8 +278,9 @@ const CreateProduct = () => {
                                                     name='colors'
                                                     component={CheckboxField}
                                                     currentValue={values.colors}
-                                                    listValues={listColors}
-                                                    label='Colors'
+                                                    listValues={colors}
+                                                    label='Màu sắc'
+                                                    showValue='colorName'
                                                 />
                                             </Grid>
                                         )}
@@ -284,7 +296,7 @@ const CreateProduct = () => {
                                             fontSize='small'
                                             className={classes.positionIcon}
                                         />{" "}
-                                        product description
+                                        Mô tả sản phẩm
                                         <Box className={classes.line}></Box>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -304,7 +316,7 @@ const CreateProduct = () => {
                                             fontSize='small'
                                             className={classes.positionIcon}
                                         />{" "}
-                                        upload image
+                                        Tải ảnh lên
                                         <Box className={classes.line}></Box>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -324,7 +336,7 @@ const CreateProduct = () => {
                                             marginTop: "35px",
                                         }}
                                     >
-                                        <CheckIcon fontSize='small' sx={{ mr: 1 }} /> Save
+                                        <CheckIcon fontSize='small' sx={{ mr: 1 }} /> Lưu lại
                                     </Button>
                                     <Button
                                         variant='contained'
@@ -336,7 +348,7 @@ const CreateProduct = () => {
                                         }}
                                         onClick={handleCancelEdit}
                                     >
-                                        cancel
+                                        Hủy
                                     </Button>
                                 </Form>
                             )}

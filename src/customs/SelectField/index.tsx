@@ -52,7 +52,7 @@ const CustomSelectField: React.FC<CustomInputProps & FieldProps> = ({
                     <em>None</em>
                 </MenuItem>
                 {listValues?.map((value) => (
-                    <MenuItem value={value.name} key={value._id}>
+                    <MenuItem value={value._id} key={value._id}>
                         {value.name}
                     </MenuItem>
                 ))}

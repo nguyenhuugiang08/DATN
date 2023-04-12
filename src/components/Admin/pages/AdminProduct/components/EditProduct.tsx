@@ -22,6 +22,8 @@ import UploadFileField from "customs/UploadFileField";
 import { Thumbnail } from "interfaces/interface";
 import { getFileFromUrl } from "utilities/getFileFromUrl";
 import useAxios from "hooks/useAxios";
+import { getSizes } from "redux/sizeSlice";
+import { getColors } from "redux/colorSlice";
 
 const useStyles = makeStyles({
     containerAddBox: {
@@ -63,6 +65,11 @@ const useStyles = makeStyles({
         marginTop: "10px",
         marginBottom: "35px",
     },
+    titleForm: {
+        fontWeight: "700 !important",
+        color: "var(--primary-color)",
+        fontSize: "24px !important",
+    },
 });
 
 const EditProduct = () => {
@@ -78,27 +85,17 @@ const EditProduct = () => {
         quantity: "",
         thumbnails: [] as Thumbnail[],
         colors: [] as string[],
-        categoryName: "",
+        category: "",
     });
 
-    const {
-        trademark,
-        name,
-        price,
-        sizes,
-        description,
-        discount,
-        quantity,
-        thumbnails,
-        colors,
-        categoryName,
-    } = values;
-
-    const listColors = ["Đỏ", "Cam", "Vàng", "Tím", "Xám", "Trắng", "Đen"];
-    const listSizes = ["S", "M", "L"];
+    const { name, price, sizes, description, discount, quantity, thumbnails, colors, category } =
+        values;
 
     const { products } = useSelector((state: RootState) => state.product);
     const { categories } = useSelector((state: RootState) => state.category);
+    const listSizes = useSelector((state: RootState) => state.size).sizes;
+    const listColors = useSelector((state: RootState) => state.color).colors;
+    console.log(colors);
 
     const dispatch = useAppDispatch();
     const axiosRefresh = useAxios();
@@ -112,8 +109,7 @@ const EditProduct = () => {
                 setValues({
                     ...values,
                     name: response.data?.name,
-                    trademark: response.data?.trademark,
-                    categoryName: response.data?.categoryName,
+                    category: response.data?.category._id,
                     price: response.data?.price,
                     discount: response.data?.discount,
                     colors: response.data?.colors,
@@ -133,8 +129,15 @@ const EditProduct = () => {
         dispatch(getAllCategory());
     }, [dispatch]);
 
+    useEffect(() => {
+        dispatch(getSizes());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(getColors());
+    }, [dispatch]);
+
     const initialValues = {
-        trademark: "",
         name: "",
         price: "",
         sizes: [] as string[],
@@ -143,11 +146,10 @@ const EditProduct = () => {
         quantity: "",
         thumbnails: [] as Thumbnail[],
         colors: [],
-        categoryName: "",
+        category: "",
     };
 
     const validationSchema = yup.object().shape({
-        trademark: yup.string().required("Vui lòng nhập trường này"),
         name: yup
             .string()
             .required("Vui lòng nhập trường này")
@@ -168,7 +170,7 @@ const EditProduct = () => {
         price: yup.string().required("Vui lòng nhập trường này"),
         sizes: yup
             .array()
-            .of(yup.string().required())
+            .of(yup.object().required())
             .min(1, "Vui lòng chọn size cho product")
             .nullable(),
         description: yup.string().required("Vui lòng nhập trường này"),
@@ -180,18 +182,20 @@ const EditProduct = () => {
                 return value[0].size <= 2000000;
             })
         ),
-        colors: yup.array().of(yup.string()).min(1, "Vui lòng chọn ít nhất 1 màu"),
-        categoryName: yup.string().required("Vui lòng chọn category cho product"),
+        colors: yup.array().of(yup.object()).min(1, "Vui lòng chọn ít nhất 1 màu"),
+        category: yup.string().required("Vui lòng chọn category cho product"),
     });
 
-    const handleCancelEdit = () => { 
+    const handleCancelEdit = () => {
         navigate("/admin/products");
     };
 
     return (
         <div>
             <Box className={classes.containerAddBox}>
-                <Typography className={classes.headingAddAlias}>edit product</Typography>
+                <Typography className={`${classes.headingAddAlias} ${classes.titleForm}`}>
+                    Sửa thông tin sản phẩm
+                </Typography>
                 <Roadmap />
             </Box>
             <Box className={classes.boxContent}>
@@ -206,25 +210,30 @@ const EditProduct = () => {
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             onSubmit={async (values) => {
-                                console.log(values);
                                 const formData = new FormData();
                                 for (let thumbnail of values.thumbnails) {
                                     const file = await getFileFromUrl(thumbnail.url, "example.jpg");
                                     formData.append("thumbnails", file);
                                 }
-                                formData.append("trademark", values.trademark);
                                 formData.append("name", values.name);
-                                formData.append("categoryName", values.categoryName);
+                                formData.append("category", values.category);
                                 formData.append("description", values.description);
                                 formData.append("discount", values.discount);
                                 formData.append("price", values.price);
                                 formData.append("quantity", values.quantity);
-                                values.colors?.forEach((color) => formData.append("colors", color));
-                                values.sizes?.forEach((size) => formData.append("sizes", size));
+                                values.colors?.forEach((color) =>
+                                    formData.append("colors", JSON.stringify(color))
+                                );
+                                values.sizes?.forEach((size) =>
+                                    formData.append("sizes", JSON.stringify(size))
+                                );
 
                                 const updateProduct = async () => {
                                     try {
-                                        await productApi.updateProduct({ id, formData }, axiosRefresh);
+                                        await productApi.updateProduct(
+                                            { id, formData },
+                                            axiosRefresh
+                                        );
                                     } catch (error) {
                                         console.log(error);
                                     }
@@ -249,33 +258,23 @@ const EditProduct = () => {
                             {(formikProps) => (
                                 <Form>
                                     <Grid container spacing={4}>
-                                        {trademark && (
-                                            <Grid item xs={12} md={6}>
-                                                <FastField
-                                                    name={"trademark"}
-                                                    component={InputFieldDefaultValue}
-                                                    label={"Trademark Name"}
-                                                    currentValue={trademark}
-                                                />
-                                            </Grid>
-                                        )}
                                         {name && (
                                             <Grid item xs={12} md={6}>
                                                 <FastField
                                                     name='name'
                                                     component={InputFieldDefaultValue}
-                                                    label='Product Name'
+                                                    label='Tên sản phẩm'
                                                     currentValue={name}
                                                 />
                                             </Grid>
                                         )}
-                                        {categoryName && (
+                                        {category && (
                                             <Grid item xs={12} md={6}>
                                                 <FastField
-                                                    name='categoryName'
+                                                    name='category'
                                                     component={SelectFieldDefaultValue}
-                                                    label='Category'
-                                                    currentValue={categoryName}
+                                                    label='Danh mục'
+                                                    currentValue={category}
                                                     listValues={categories}
                                                 />
                                             </Grid>
@@ -287,7 +286,8 @@ const EditProduct = () => {
                                                     component={CheckboxField}
                                                     currentValue={sizes}
                                                     listValues={listSizes}
-                                                    label="sizes"
+                                                    label='Kích cỡ'
+                                                    showValue='sizeName'
                                                 />
                                             </Grid>
                                         )}
@@ -296,7 +296,7 @@ const EditProduct = () => {
                                                 <FastField
                                                     name='price'
                                                     component={InputFieldDefaultValue}
-                                                    label='Price'
+                                                    label='Giá bán'
                                                     currentValue={price}
                                                 />
                                             </Grid>
@@ -306,7 +306,7 @@ const EditProduct = () => {
                                                 <FastField
                                                     name='discount'
                                                     component={InputFieldDefaultValue}
-                                                    label='Discount'
+                                                    label='Giảm giá'
                                                     currentValue={discount}
                                                 />
                                             </Grid>
@@ -316,7 +316,7 @@ const EditProduct = () => {
                                                 <FastField
                                                     name='quantity'
                                                     component={InputFieldDefaultValue}
-                                                    label='Quantity'
+                                                    label='Số lượng'
                                                     currentValue={quantity}
                                                 />
                                             </Grid>
@@ -328,7 +328,8 @@ const EditProduct = () => {
                                                     component={CheckboxField}
                                                     currentValue={colors}
                                                     listValues={listColors}
-                                                    label="colors"
+                                                    label='Màu sắc'
+                                                    showValue='colorName'
                                                 />
                                             </Grid>
                                         )}
@@ -388,7 +389,7 @@ const EditProduct = () => {
                                             marginTop: "35px",
                                         }}
                                     >
-                                        <CheckIcon fontSize='small' sx={{ mr: 1 }} /> Save
+                                        <CheckIcon fontSize='small' sx={{ mr: 1 }} /> Lưu lại
                                     </Button>
                                     <Button
                                         variant='contained'
@@ -400,7 +401,7 @@ const EditProduct = () => {
                                         }}
                                         onClick={handleCancelEdit}
                                     >
-                                        cancel
+                                        Hủy
                                     </Button>
                                 </Form>
                             )}

@@ -1,6 +1,62 @@
 * {
-    font-family: 'Mulish', sans-serif !important;
+    font-family: 'Open Sans', sans-serif !important;
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+}
+
+:root {
+    --primary-color: #2f5acf;
+}
+
+.swiper-wrapper .swiper-slide-thumb-active {
+    border: "1px solid #cd6420";
+    border-radius: "4px";
+}
+
+.css-f3jnds-MuiDataGrid-columnHeaders {
+    max-height: 36px !important;
+    min-height: 36px !important;
+}
+
+.MuiDataGrid-cell {
+    min-height: 44px !important;
+    border-bottom: 1px solid #cdcdcd !important;
+}
+
+.MuiDataGrid-cell:focus {
+    outline: unset !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #b8bcc3;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #8e8d8d;
+}
+
+.MuiDataGrid-columnHeader:focus {
+    outline: unset !important;
+}
+
+.MuiDataGrid-virtualScroller {
+    margin-top: 36px !important;
+}
+
+.MuiDataGrid-root {
+    border: 1px solid #cdcdcd !important;
 }

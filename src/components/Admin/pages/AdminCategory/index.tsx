@@ -50,6 +50,11 @@ const useStyles = makeStyles({
         color: "#2f80ed",
         fontSize: "14px",
     },
+    titleForm: {
+        fontWeight: "700 !important",
+        color: "var(--primary-color)",
+        fontSize: "24px !important",
+    },
 });
 
 const AdminCategory = () => {
@@ -65,15 +70,21 @@ const AdminCategory = () => {
     const axiosRefresh = useAxios();
 
     const columns: GridColDef[] = [
-        { field: "_id", headerName: "ID", width: 320 },
-        { field: "name", headerName: "Name", width: 240 },
-        { field: "aliasName", headerName: "Alias name", width: 240 },
-        { field: "deleted", headerName: "Deleted", width: 170, sortable: false },
+        { field: "_id", headerName: "Mã danh mục", width: 320, sortable: false },
+        { field: "name", headerName: "Tên danh mục", width: 240, sortable: false },
+        {
+            field: "deleted",
+            headerName: "Trạng thái xóa",
+            width: 170,
+            sortable: false,
+        },
         {
             field: "action",
-            headerName: "Action",
+            headerName: "Hành động",
             sortable: false,
             width: 200,
+            headerAlign: "center",
+            align: "center",
             renderCell: (params) => {
                 const onClickEditCategory = (
                     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -160,8 +171,8 @@ const AdminCategory = () => {
     return (
         <>
             <Box className={classes.containerBox}>
-                <Typography className={classes.headingAlias}>
-                    product categories
+                <Typography className={`${classes.headingAlias} ${classes.titleForm}`}>
+                    Danh mục sản phẩm
                     <Link to='trash-categories' className={classes.linkTrash}>
                         Trash
                     </Link>
@@ -169,7 +180,7 @@ const AdminCategory = () => {
                 <Button color='success' variant='contained'>
                     <Link to='create-category' className={classes.linkAddAlias}>
                         <CreateNewFolderIcon sx={{ mr: 1 }} />
-                        create
+                        Thêm mới
                     </Link>
                 </Button>
             </Box>
@@ -181,7 +192,6 @@ const AdminCategory = () => {
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[10]}
-                    checkboxSelection
                 />
                 <Dialog open={isOpen} onClose={handleClose} aria-labelledby='form-dialog-title'>
                     <DialogTitle id='form-dialog-title'> User </DialogTitle>

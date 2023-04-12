@@ -199,9 +199,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         <div>
             <Typography className={classes.productName}>{product.name}</Typography>
             <Grid container>
-                <Box sx={{ mr: 2 }}>
-                    Thương hiệu: <span style={{ color: "#007bff" }}>{product.trademark}</span>
-                </Box>
                 <Box>
                     Mã sản phẩm: <span style={{ color: "#007bff" }}>{product._id}</span>
                 </Box>
