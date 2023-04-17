@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     },
 });
 
-const DemoProduct: React.FC = () => {
+const TrousersProducts: React.FC = () => {
     const classes = useStyles();
     const { dataHome } = useSelector((state: RootState) => state.others);
 
@@ -24,15 +24,10 @@ const DemoProduct: React.FC = () => {
                     Mua sắm cả tủ đồ dành cho nam giới
                 </Grid>
                 <Grid container>
-                    <CardProduct
-                        products={dataHome.shirtProducts}
-                        spacing={3}
-                        totalColumn={2}
-                        columns={10}
-                    />
+                    <CardProduct products={dataHome.trousersProducts} spacing={2} totalColumn={2} columns={10}/>
                 </Grid>
             </Container>
         </div>
     );
 };
-export default DemoProduct;
+export default TrousersProducts;

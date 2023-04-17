@@ -4,6 +4,7 @@ import { useAppDispatch } from "redux/store";
 import Banner from "./components/Banner";
 import Image from "./components/Image";
 import DemoProduct from "./components/DemoProduct";
+import TrousersProducts from "./components/TrousersProducts";
 
 const Home: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -17,6 +18,7 @@ const Home: React.FC = () => {
             <Banner />
             <DemoProduct />
             <Image />
+            <TrousersProducts />
         </>
     );
 };

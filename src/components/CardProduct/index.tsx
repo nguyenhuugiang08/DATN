@@ -8,6 +8,7 @@ export interface CardProductProps {
     products: Product[];
     totalColumn: any;
     spacing: any;
+    columns: any;
 }
 
 const useStyles = makeStyles({
@@ -72,10 +73,10 @@ const useStyles = makeStyles({
     },
 });
 
-const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacing }) => {
+const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacing, columns }) => {
     const classes = useStyles();
     return (
-        <Grid item container spacing={spacing}>
+        <Grid item container spacing={spacing} columns={columns}>
             {products?.map((product) => (
                 <Grid item xs={totalColumn} key={product._id}>
                     <Link to={`/product/${product._id}`}>

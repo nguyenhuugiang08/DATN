@@ -9,6 +9,7 @@ import newsReducer from "./newsSlice";
 import othersReducer from "./othersSlice";
 import sizeReducer from "./sizeSlice";
 import colorReducer from "./colorSlice";
+import cartReducer from "./cartSlice";
 import thunk from "redux-thunk";
 
 const rootReducer = combineReducers({
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     others: othersReducer,
     size: sizeReducer,
     color: colorReducer,
+    cart: cartReducer,
 });
 
 const persistConfig = {

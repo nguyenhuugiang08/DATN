@@ -11,7 +11,7 @@ export interface Picture {
 }
 
 export interface Product {
-    _id?: string;
+    _id: string;
     name: string;
     price: string;
     sizes: string[];
@@ -58,6 +58,8 @@ export interface News {
 export interface HomeData {
     bannerUrls: string[];
     shirtProducts: Product[];
+    trousersProducts: Product[];
+    homeBasic: any;
 }
 
 export interface Size {
@@ -69,4 +71,19 @@ export interface Color {
     _id: string;
     colorName: string;
     thumbnail: string;
+}
+
+export interface Policy {
+    image: string;
+    title: string;
+}
+
+export interface CartItem {
+    thumbnail: string;
+    sizeId: string;
+    colorId: string;
+    quantity: number | string;
+    price: number | string;
+    productName: string;
+    productId: string;
 }

@@ -1,36 +1,35 @@
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import { Box, Collapse, ListItemButton, ListItemText, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useState } from "react";
 
 const useStyles = makeStyles({
     policyTitle: {
-        color: "#666666",
-        fontSize: "18px",
-        fontWeight: 600,
+        color: "#000",
+        fontSize: "18px !important",
+        fontWeight: "500 !important",
         margin: "16px 0",
+        textTransform: "uppercase",
+        width: "100%",
+        background: "#00000005",
+        padding: "12px",
+        marginBottom: "10px !important",
     },
     policyText: {
         marginBottom: "16px",
         color: "#666666",
+        fontSize: "14px !important",
+        lineHeight: "2.5 !important",
     },
 });
 
 const ProductPolicies: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
     const classes = useStyles();
 
     return (
-        <Box>
-            <ListItemButton onClick={() => setIsOpen(!isOpen)}>
-                <ListItemText primary='Chính sách giao hàng' />
-                {isOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={isOpen} timeout='auto' unmountOnExit sx={{ paddingLeft: "16px" }}>
-                <Typography className={classes.policyTitle}>CHÍNH SÁCH GIAO HÀNG</Typography>
+        <div>
+            <Typography className={classes.policyTitle}>chính sách giao hàng</Typography>
+            <Box sx={{ marginLeft: "14px", marginBottom: "30px" }}>
                 <Typography className={classes.policyText}>
-                    EGA Style có dịch vụ giao hàng tận nơi trên toàn quốc, áp dụng cho khách mua
+                    HUUGIANG shop có dịch vụ giao hàng tận nơi trên toàn quốc, áp dụng cho khách mua
                     hàng trên website, fanpage và gọi điện thoại, không áp dụng cho khách mua trực
                     tiếp tại cửa hàng.
                 </Typography>
@@ -38,14 +37,18 @@ const ProductPolicies: React.FC = () => {
                     Đơn hàng sẽ được chuyển phát đến tận địa chỉ khách hàng cung cấp thông qua công
                     ty vận chuyển trung gian.
                 </Typography>
-                <strong>1. Thời gian giao hàng:</strong>
-                <li style={{ padding: "16px 0" }}>Đơn hàng nội và ngoại thành TP.HCM:</li>
+                <Typography className={classes.policyText}>1. Thời gian giao hàng:</Typography>
+                <Typography className={classes.policyText}>
+                    Đơn hàng nội và ngoại thành TP.HCM:
+                </Typography>
                 <Typography className={classes.policyText}>
                     Thời gian giao hàng là 1-2 ngày sau khi đặt hàng. Đơn hang trước 11h30 trưa thì
                     sẽ giao trong buổi chiều cùng ngày Đơn hàng sau 11h30 sẽ giao trong buổi tối và
                     sáng hôm sau.
                 </Typography>
-                <li style={{ padding: "16px" }}>Đơn hàng ở các tỉnh thành khác:</li>
+                <Typography className={classes.policyText}>
+                    Đơn hàng ở các tỉnh thành khác:
+                </Typography>
                 <Typography className={classes.policyText}>
                     <Typography className={classes.policyText}>
                         Thời gian là 2-3 ngày đối với khu vực trung tâm tỉnh thành phố, 3-7 ngày đối
@@ -82,12 +85,12 @@ const ProductPolicies: React.FC = () => {
                         hàng để đối chiếu kiểm tra.
                     </Typography>
                 </Typography>
-                <strong>2. Phí giao hàng:</strong>
-                <li style={{ padding: "16px" }}>
+                <Typography className={classes.policyText}>2. Phí giao hàng:</Typography>
+                <Typography className={classes.policyText}>
                     Phí ship cố định là 30,000đ áp dụng cho mọi khu vực
-                </li>
-            </Collapse>
-        </Box>
+                </Typography>
+            </Box>
+        </div>
     );
 };
 export default ProductPolicies;

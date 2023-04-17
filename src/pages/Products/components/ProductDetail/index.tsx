@@ -16,11 +16,12 @@ import { Thumbnail } from "interfaces/interface";
 
 const useStyles = makeStyles({
     gallery: {
-        width: "90px",
-        height: "120px",
+        width: "48px",
+        height: "48px",
     },
     thumbnail: {
         width: "100%",
+        borderRadius: "16px",
     },
     prevBtn: {
         top: "50%",
@@ -73,7 +74,7 @@ const useStyles = makeStyles({
         },
     },
     thumbActive: {
-        border: "2px solid #cd6420",
+        border: "2px solid var(--primary-color)",
         borderRadius: "6px",
     },
 });
@@ -97,7 +98,7 @@ const ProductDetail: React.FC = () => {
     return (
         <Container>
             <Grid container>
-                <Grid item xs={12} md={6} sx={{ p: 4 }}>
+                <Grid item xs={12} md={7} sx={{ p: 4, pr: 6 }}>
                     <Swiper
                         spaceBetween={10}
                         navigation={{
@@ -157,7 +158,7 @@ const ProductDetail: React.FC = () => {
                     <Swiper
                         onSwiper={setThumbsSwiper as any}
                         spaceBetween={10}
-                        slidesPerView={5}
+                        slidesPerView={7}
                         freeMode={true}
                         watchSlidesProgress={true}
                         modules={[FreeMode, Navigation, Thumbs]}
@@ -167,23 +168,23 @@ const ProductDetail: React.FC = () => {
                         {product.thumbnails?.map((thumbnail: Thumbnail, index: number) => (
                             <SwiperSlide
                                 key={thumbnail.urlId}
-                                style={{ cursor: "pointer" }}
+                                style={{
+                                    cursor: "pointer",
+                                    backgroundImage: `url(${thumbnail.url})`,
+                                    paddingTop: "15%",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "contain",
+                                }}
                                 className={`${index === indexActive && classes.thumbActive}`}
-                            >
-                                <img
-                                    src={thumbnail.url}
-                                    alt='thumbnail'
-                                    className={classes.gallery}
-                                />
-                            </SwiperSlide>
+                            ></SwiperSlide>
                         ))}
                     </Swiper>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={5}>
                     <ProductInfo product={product} />
-                    <ProductPolicies />
-                    <ProductReturnPolicies />
                 </Grid>
+                <ProductPolicies />
+                <ProductReturnPolicies />
             </Grid>
         </Container>
     );
