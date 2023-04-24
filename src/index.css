@@ -60,3 +60,96 @@
 .MuiDataGrid-root {
     border: 1px solid #cdcdcd !important;
 }
+
+.multi-range-slider .thumb::before {
+    width: 16px !important;
+    height: 16px !important;
+    top: 2px;
+    border: 2px solid var(--primary-color) !important;
+    box-shadow: 0.5px 0.5px 2px 1px rgba(0, 0, 0, .32) !important;
+}
+
+.caption {
+    display: none !important;
+}
+
+
+.list-filter-child {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, .5);
+    opacity: 0;
+    padding: 10px 10px 0;
+    transition: .5s;
+    width: 350px;
+    top: 44px;
+    left: 0;
+    z-index: 99;
+    display: none;
+}
+
+.list-filter-child::before {
+    content: "";
+    position: absolute;
+    border: 12px solid;
+    border-color: transparent transparent #fff transparent;
+    top: -20px;
+    left: 32px;
+}
+
+.range-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.range-header p {
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.show.btn-filter-group {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.button.submit {
+    border-color: transparent;
+    color: #fff;
+    border-width: 1px;
+    cursor: pointer;
+    justify-content: center;
+    padding: calc(0.5em - 1px) 1em;
+    text-align: center;
+    white-space: nowrap;
+    background-color: var(--primary-color);
+    font-size: 14px;
+    font-weight: 600;
+    width: calc(50% - 5px);
+    border-radius: 4px;
+}
+
+.button.is-light {
+    border-color: transparent;
+    color: var(--primary-color);
+    border-width: 1px;
+    cursor: pointer;
+    justify-content: center;
+    padding: calc(0.5em - 1px) 1em;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #adc0f4;
+    font-size: 14px;
+    font-weight: 600;
+    width: calc(50% - 5px);
+    border-radius: 4px;
+}
+
+.sort-active {
+    border: 1px solid var(--primary-color) !important;
+    background-color: #e4ebff !important;
+}

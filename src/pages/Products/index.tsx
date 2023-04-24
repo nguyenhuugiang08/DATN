@@ -9,7 +9,6 @@ const Products: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const productRef = useRef() as React.MutableRefObject<HTMLInputElement>;
-    console.log(productRef?.current?.style);
 
     useEffect(() => {
         dispatch(getProductByFilters());

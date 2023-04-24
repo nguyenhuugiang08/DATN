@@ -160,7 +160,7 @@ const useStyles = makeStyles({
         backgroundPosition: "center",
         paddingTop: "60%",
         borderRadius: "10px",
-        marginRight: "6px",
+        margin: "2px",
     },
     addCartBtn: {
         "&:hover": {
@@ -176,6 +176,24 @@ const useStyles = makeStyles({
         textAlign: "center",
         fontSize: "13px",
     },
+    policyTitle: {
+        color: "#000",
+        fontSize: "18px !important",
+        fontWeight: "600 !important",
+        margin: "16px 0",
+        width: "100%",
+        marginBottom: "10px !important",
+    },
+    policyText: {
+        marginBottom: "16px",
+        color: "#666666",
+        fontSize: "14px !important",
+        lineHeight: "2.5 !important",
+    },
+    colorActive: {
+        border: "2px solid var(--primary-color)",
+        borderRadius: "12px",
+    },
 });
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
@@ -185,8 +203,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         quantity: 1,
     });
 
-    const [isOpen, setIsOpen] = useState(false);
-
+    const descriptionLines = product?.description.split("\r\n");
     const { size, color, quantity } = info;
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -315,7 +332,13 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                         <Box
                             key={index}
                             onClick={() => setInfo({ ...info, color: color })}
-                            sx={{ width: "60px" }}
+                            sx={{ width: "60px", marginRight: "10px" }}
+                            className={`${
+                                index ===
+                                    product?.colors
+                                        ?.map((color: any) => color?.colorName)
+                                        .indexOf(info.color?.colorName) && classes.colorActive
+                            }`}
                         >
                             <div
                                 style={{ backgroundImage: `url(${color.thumbnail})` }}
@@ -383,15 +406,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                     </Grid>
                 ))}
             </Grid>
-            <Box>
-                <ListItemButton onClick={() => setIsOpen(!isOpen)}>
-                    <ListItemText primary='Mô tả sản phẩm' />
-                    {isOpen ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={isOpen} timeout='auto' unmountOnExit>
-                    {product?.description}
-                </Collapse>
-            </Box>
+            <Typography className={classes.policyTitle}>Đặc điểm nổi bật</Typography>
+            {descriptionLines?.map((line: string, index: number) => (
+                <Typography key={index} className={classes.policyText}>
+                    {line}
+                </Typography>
+            ))}
         </div>
     );
 };

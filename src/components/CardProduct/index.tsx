@@ -3,6 +3,7 @@ import { Grid, Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Color, Product } from "interfaces/interface";
 import { makeStyles } from "@mui/styles";
+import { formatPrice } from "utilities/formatPrice";
 
 export interface CardProductProps {
     products: Product[];
@@ -118,7 +119,7 @@ const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacin
                             component={"span"}
                             variant={"body2"}
                         >
-                            {product.price.toLocaleString()}
+                            {formatPrice(product.price)}
                             <u>đ</u>
                         </Typography>
                         <Typography
@@ -126,20 +127,23 @@ const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacin
                             component={"span"}
                             variant={"body2"}
                         >
-                            <del>
-                                {(
-                                    (Number(product.price) * Number(product.discount)) /
-                                    100
-                                ).toLocaleString()}
-                                đ
-                            </del>
-                            <Typography
-                                className={classes.productDiscount}
-                                component={"span"}
-                                variant={"body2"}
-                            >
-                                -{product.discount}%
-                            </Typography>
+                            {Number(product.discount) !== 0 && (
+                                <div>
+                                    <del>
+                                        {formatPrice(
+                                            (Number(product.price) * Number(product.discount)) / 100
+                                        )}
+                                        đ
+                                    </del>
+                                    <Typography
+                                        className={classes.productDiscount}
+                                        component={"span"}
+                                        variant={"body2"}
+                                    >
+                                        -{product.discount}%
+                                    </Typography>
+                                </div>
+                            )}
                         </Typography>
                     </Box>
                 </Grid>

@@ -21,7 +21,7 @@ const DemoProduct: React.FC = () => {
         <div>
             <Container maxWidth='xl'>
                 <Grid item xs={12} className={classes.demoProductTitle}>
-                    Mua sắm cả tủ đồ dành cho nam giới
+                    Mẫu áo nam
                 </Grid>
                 <Grid container>
                     <CardProduct

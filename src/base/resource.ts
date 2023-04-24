@@ -55,4 +55,5 @@ export const HG_RESOURCE = {
             title: "Giao hàng nhanh toàn quốc",
         },
     ],
+    SHIRT_CATEGORY: "6433f115e20ab5121b937808",
 };

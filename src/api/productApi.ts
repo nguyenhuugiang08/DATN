@@ -38,7 +38,20 @@ const productApi = {
     restoreProduct: (params: string | undefined, axios: AxiosInstance) => {
         const url = `/product/restore/${params}`;
         return axios.patch(url);
-    }
+    },
+    getProductsByCategoryId: (
+        params: string | undefined,
+        minPrice: number | string,
+        maxPrice: number | string
+    ) => {
+        const url = `/product/category/${params}`;
+        return axiosClient.get(url, {
+            params: {
+                minPrice: minPrice,
+                maxPrice: maxPrice,
+            },
+        });
+    },
 };
 
 export default productApi;

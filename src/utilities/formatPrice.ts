@@ -1,4 +1,4 @@
-export const formatPrice = (price: string, discount?: string) => {
+export const formatPrice = (price: string | number, discount?: string) => {
     if (discount) {
         price = new Intl.NumberFormat("vi-VI").format((Number(price) * Number(discount)) / 100);
     } else {

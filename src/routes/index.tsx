@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import EditNews from "components/Admin/pages/AdminNews/components/EditNews";
 import CreateNews from "components/Admin/pages/AdminNews/components/CreateNews";
 import TrashNews from "components/Admin/pages/AdminNews/components/TrashNews";
+import MensShirt from "pages/MensShirt";
 
 const RouterApp: React.FC = () => {
     const { search } = useLocation();
@@ -48,6 +49,10 @@ const RouterApp: React.FC = () => {
                 {
                     path: "/",
                     element: <Home />,
+                },
+                {
+                    path: "collection/ao-nam",
+                    element: <MensShirt />,
                 },
             ],
         },

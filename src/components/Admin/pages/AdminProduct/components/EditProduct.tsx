@@ -301,16 +301,17 @@ const EditProduct = () => {
                                                 />
                                             </Grid>
                                         )}
-                                        {discount && (
-                                            <Grid item xs={12} md={6}>
-                                                <FastField
-                                                    name='discount'
-                                                    component={InputFieldDefaultValue}
-                                                    label='Giảm giá'
-                                                    currentValue={discount}
-                                                />
-                                            </Grid>
-                                        )}
+                                        {discount ||
+                                            (Number(discount) === 0 && (
+                                                <Grid item xs={12} md={6}>
+                                                    <FastField
+                                                        name='discount'
+                                                        component={InputFieldDefaultValue}
+                                                        label='Giảm giá'
+                                                        currentValue={discount}
+                                                    />
+                                                </Grid>
+                                            ))}
                                         {quantity && (
                                             <Grid item xs={12} md={6}>
                                                 <FastField
