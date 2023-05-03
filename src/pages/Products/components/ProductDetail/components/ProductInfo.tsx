@@ -1,22 +1,11 @@
-import {
-    Typography,
-    Grid,
-    Box,
-    Button,
-    ListItemButton,
-    ListItemText,
-    Collapse,
-} from "@mui/material";
+import { Typography, Grid, Box, Button } from "@mui/material";
 import { formatPrice } from "utilities/formatPrice";
-import CardGiftcardTwoToneIcon from "@mui/icons-material/CardGiftcardTwoTone";
 import { CartItem, Policy, Product } from "interfaces/interface";
 import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import { HG_RESOURCE } from "base/resource";
 import { useDispatch } from "react-redux";
 import { addItem } from "redux/cartSlice";
@@ -203,7 +192,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         quantity: 1,
     });
 
-    const descriptionLines = product?.description.split("\r\n");
+    const descriptionLines = product?.description?.split("\r\n");
     const { size, color, quantity } = info;
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -243,12 +232,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         try {
             const item: CartItem = {
                 thumbnail: product.thumbnails[0].url,
-                colorId: product.colors[0],
+                color: info.color as any,
                 price: product.price,
                 productId: product?._id,
                 productName: product.name,
-                quantity: 1,
-                sizeId: product.sizes[0],
+                quantity: info.quantity,
+                size: info.size as any,
             };
 
             dispatch(addItem(item));

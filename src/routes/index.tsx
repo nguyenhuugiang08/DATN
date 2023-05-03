@@ -27,6 +27,7 @@ import EditNews from "components/Admin/pages/AdminNews/components/EditNews";
 import CreateNews from "components/Admin/pages/AdminNews/components/CreateNews";
 import TrashNews from "components/Admin/pages/AdminNews/components/TrashNews";
 import MensShirt from "pages/MensShirt";
+import CartAll from "components/Cart/CartAll";
 
 const RouterApp: React.FC = () => {
     const { search } = useLocation();
@@ -53,6 +54,10 @@ const RouterApp: React.FC = () => {
                 {
                     path: "collection/ao-nam",
                     element: <MensShirt />,
+                },
+                {
+                    path: "cart",
+                    element: <CartAll />,
                 },
             ],
         },

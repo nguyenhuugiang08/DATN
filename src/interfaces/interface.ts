@@ -80,8 +80,8 @@ export interface Policy {
 
 export interface CartItem {
     thumbnail: string;
-    sizeId: string;
-    colorId: string;
+    size: Size;
+    color: Color;
     quantity: number | string;
     price: number | string;
     productName: string;

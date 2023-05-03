@@ -72,3 +72,32 @@
     }
 
 }
+
+.cart-wrapper {
+    position: absolute;
+    width: 400px;
+    max-height: 650px;
+    padding: 16px 16px 0 16px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, .06666666666666667);
+    border: 1px solid #d9d9d9;
+    top: 60px;
+    right: -4px;
+    z-index: 99;
+    display: none;
+}
+
+.cart-icon::before {
+    content: "";
+    position: absolute;
+    height: 30px;
+    width: 200px;
+    background-color: transparent;
+    bottom: -22px;
+    right: -4px;
+}
+
+.cart-icon:hover .cart-wrapper {
+    display: block;
+}

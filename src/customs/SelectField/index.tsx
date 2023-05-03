@@ -3,12 +3,16 @@ import "./customfield.scss";
 import { FieldProps } from "formik";
 import { useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material/Select";
+import { useAppDispatch } from "redux/store";
+import { getDistrict } from "redux/regionSlice";
 
 interface CustomInputProps {
     type?: string;
     label?: string;
     currentValue?: string;
-    listValues?: { name: string; _id: string }[];
+    listValues?: any[];
+    displayValue: string;
+    isDistrict: boolean;
 }
 
 const CustomSelectField: React.FC<CustomInputProps & FieldProps> = ({
@@ -17,11 +21,14 @@ const CustomSelectField: React.FC<CustomInputProps & FieldProps> = ({
     type = "text",
     currentValue,
     listValues,
+    displayValue = "_id",
+    isDistrict = false,
     ...props
 }) => {
     const { name } = field;
     const { touched, errors } = form;
     const showError = (errors[name] && touched[name]) as boolean | undefined;
+    const dispatch = useAppDispatch();
 
     const [valueSelect, setValueSelect] = useState("");
 
@@ -36,11 +43,17 @@ const CustomSelectField: React.FC<CustomInputProps & FieldProps> = ({
         form.setFieldValue(name, e.target.value);
     };
 
+    useEffect(() => {
+        if (isDistrict) dispatch(getDistrict(valueSelect));
+    }, [dispatch, isDistrict, valueSelect]);
+
     return (
         <FormGroup>
-            <label className='login-form-label'>
-                {props.label} <span className='required'>*</span>
-            </label>
+            {props.label && (
+                <label className='login-form-label'>
+                    {props.label} <span className='required'>*</span>
+                </label>
+            )}
             <Select
                 id={name}
                 {...field}
@@ -52,7 +65,7 @@ const CustomSelectField: React.FC<CustomInputProps & FieldProps> = ({
                     <em>None</em>
                 </MenuItem>
                 {listValues?.map((value) => (
-                    <MenuItem value={value._id} key={value._id}>
+                    <MenuItem value={value[`${displayValue}`]} key={value[`${displayValue}`]}>
                         {value.name}
                     </MenuItem>
                 ))}
