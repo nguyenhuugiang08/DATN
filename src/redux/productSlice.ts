@@ -12,6 +12,13 @@ interface CategoryData {
     categoryId: string | undefined;
     minPrice: number | string;
     maxPrice: number | string;
+    sortType: number | string;
+    page: number | string;
+}
+
+interface DiscountData {
+    page: number | string;
+    sortType: number | string;
 }
 
 export const getProductByFilters = createAsyncThunk<Product[]>("product/getAll", async () => {
@@ -29,13 +36,20 @@ export const getProductByFilters = createAsyncThunk<Product[]>("product/getAll",
 
 export const getProductsByCategoryId = createAsyncThunk<any, CategoryData>(
     "product/getProductByCategory",
-    async (categoryData: CategoryData) => {
+    async (categoryData: CategoryData, { dispatch }) => {
         try {
+            dispatch(userLoading(true));
+            dispatch(setHasMore(false));
             const response = await productApi.getProductsByCategoryId(
                 categoryData.categoryId,
                 categoryData.minPrice,
-                categoryData.maxPrice
+                categoryData.maxPrice,
+                categoryData.sortType,
+                categoryData.page
             );
+            dispatch(userLoading(false));
+            dispatch(setHasMore(response.data?.hasMoreItems));
+            dispatch(setIsProgress(response.data?.hasMoreItems));
             return response.data?.products;
         } catch (err) {
             let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
@@ -79,12 +93,40 @@ export const getTrashProducts = createAsyncThunk<Product[], AxiosInstance>(
     }
 );
 
+export const getProductDiscount = createAsyncThunk<any, DiscountData>(
+    "product/discount",
+    async (discountData: DiscountData, { dispatch }) => {
+        try {
+            dispatch(userLoading(true));
+            dispatch(setHasMore(false));
+            const response = await productApi.getProductDiscount(
+                discountData.page,
+                discountData.sortType
+            );
+            dispatch(userLoading(false));
+            dispatch(setHasMore(response.data?.hasMoreItems));
+            dispatch(setIsProgress(response.data?.hasMoreItems));
+            return response.data?.listProducts;
+        } catch (err) {
+            let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
+            if (!error.response) {
+                throw err;
+            }
+            return error.response.data;
+        }
+    }
+);
+
 interface ProductState {
     error: string | null | undefined;
     products: Product[];
     trashProducts: Product[];
     product: Product;
     categoryProducts: Product[];
+    loading: boolean;
+    discountProducts: Product[];
+    hasMore: boolean;
+    isProgress: boolean;
 }
 
 const initialState = {
@@ -93,14 +135,30 @@ const initialState = {
     trashProducts: [],
     categoryProducts: [],
     error: null,
+    loading: false,
+    discountProducts: [],
+    hasMore: false,
+    isProgress: false,
 } as ProductState;
 
 const productSlice = createSlice({
     name: "product",
     initialState,
     reducers: {
-        sortProduct: (state, action) => {
-            state.categoryProducts = [...action.payload];
+        resetProduct: (state) => {
+            state.categoryProducts = [];
+        },
+
+        userLoading: (state, action) => {
+            state.loading = action.payload;
+        },
+
+        setHasMore: (state, action) => {
+            state.hasMore = action.payload;
+        },
+
+        setIsProgress: (state, action) => {
+            state.isProgress = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -138,9 +196,40 @@ const productSlice = createSlice({
         });
 
         builder.addCase(getProductsByCategoryId.fulfilled, (state, { payload }) => {
-            state.categoryProducts = [...payload];
+            const lstItems = [];
+            payload?.map((item: Product) => {
+                if (!state.categoryProducts.map((_) => _._id).includes(item._id)) {
+                    state.categoryProducts.push(item);
+                    lstItems.push(item);
+                }
+            });
+
+            if (lstItems.length === 0 && state.hasMore) {
+                state.categoryProducts = [...payload];
+            }
         });
         builder.addCase(getProductsByCategoryId.rejected, (state, action) => {
+            if (action.payload) {
+                state.error = "Have got an exception!";
+            } else {
+                state.error = action.error.message;
+            }
+        });
+
+        builder.addCase(getProductDiscount.fulfilled, (state, { payload }) => {
+            const lstItems = [];
+            payload?.map((item: Product) => {
+                if (!state.discountProducts.map((_) => _._id).includes(item._id)) {
+                    state.discountProducts.push(item);
+                    lstItems.push(item);
+                }
+            });
+
+            if (lstItems.length === 0 && state.hasMore) {
+                state.discountProducts = [...payload];
+            }
+        });
+        builder.addCase(getProductDiscount.rejected, (state, action) => {
             if (action.payload) {
                 state.error = "Have got an exception!";
             } else {
@@ -150,5 +239,5 @@ const productSlice = createSlice({
     },
 });
 
-export const { sortProduct } = productSlice.actions;
+export const { resetProduct, userLoading, setHasMore, setIsProgress } = productSlice.actions;
 export default productSlice.reducer;

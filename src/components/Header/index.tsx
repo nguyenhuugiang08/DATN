@@ -1,5 +1,5 @@
 import { Container, Grid, ImageListItem } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./header.scss";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -48,6 +48,8 @@ function Header() {
     const { cart } = useSelector((state: RootState) => state.cart);
     const classes = useStyles();
     const [totalProductInCart, setTotalProductInCart] = useState(0);
+    const location = useLocation();
+    console.log(location);
 
     useEffect(() => {
         const total = cart?.reduce((result: number, cur: CartItem) => {
@@ -65,7 +67,13 @@ function Header() {
                     </ImageListItem>
                     <div className='mySwiper header-link'>
                         {HG_RESOURCE.CATEGORY.map((category, index) => (
-                            <Link to={category.path} key={index} className='header-link__item'>
+                            <Link
+                                to={category.path}
+                                key={index}
+                                className={`header-link__item ${
+                                    location?.pathname == category.path ? "header-link__active" : ""
+                                }`}
+                            >
                                 {category.title}
                             </Link>
                         ))}

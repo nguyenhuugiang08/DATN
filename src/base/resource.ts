@@ -5,10 +5,6 @@ export const HG_RESOURCE = {
             title: "Trang chủ",
         },
         {
-            path: "/collection",
-            title: "Bộ sưu tập",
-        },
-        {
             path: "/collection/ao-nam",
             title: "Áo nam",
         },
@@ -25,7 +21,7 @@ export const HG_RESOURCE = {
             title: "Phụ kiện",
         },
         {
-            path: "/",
+            path: "/collection/discount",
             title: "Giảm giá",
         },
     ],
@@ -56,4 +52,7 @@ export const HG_RESOURCE = {
         },
     ],
     SHIRT_CATEGORY: "6433f115e20ab5121b937808",
+    TROUSERS_CATEGORY: "6433f246e20ab5121b937809",
+    MAN_UNDERWEAR: "6433f252e20ab5121b93780a",
+    MEN_ACCESSORIES: "6433f25fe20ab5121b93780b",
 };

@@ -1,37 +1,42 @@
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { FastField, Field, Form, Formik } from "formik";
 import * as yup from "yup";
 import InputField from "customs/InputField";
-import { useEffect, useRef, useState } from "react";
-import regionApi from "api/regionApi";
-import CustomSelectField from "customs/SelectField";
-import { RootState, useAppDispatch } from "redux/store";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { getCommune, getConscious, getDistrict } from "redux/regionSlice";
+import { RootState, useAppDispatch } from "redux/store";
+import orderApi from "api/orderApi";
+import useAxios from "hooks/useAxios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { setDefaultCart } from "redux/cartSlice";
 
 const FormCart = () => {
     const dispatch = useAppDispatch();
-    const { consciouses, districts, communes } = useSelector((state: RootState) => state.region);
-
+    const { consciouses, districts } = useSelector((state: RootState) => state.region);
+    const { cart } = useSelector((state: RootState) => state.cart);
+    const axiosRefresh = useAxios();
+    const navigate = useNavigate();
     const initialValues = {
         name: "",
-        phoneNumber: "",
+        phone: "",
         email: "",
         address: "",
         conscious: "",
         district: "",
-        commune: "",
         note: "",
+        products: "",
+        sumMoney: "",
     };
 
     const validationSchema = yup.object().shape({
         name: yup.string().required("Vui lòng nhập trường này."),
-        phoneNumber: yup.string().required("Vui lòng nhập trường này."),
+        phone: yup.string().required("Vui lòng nhập trường này."),
         email: yup.string().required("Vui lòng nhập trường này."),
         address: yup.string().required("Vui lòng nhập trường này."),
         conscious: yup.string().required("Vui lòng chọn Tỉnh/ Thành phố."),
         district: yup.string().required("Vui lòng chọn Quận/ Huyện."),
-        commune: yup.string().required("Vui lòng chọn Phường/ Xã."),
         note: yup.string(),
     });
     useEffect(() => {
@@ -54,29 +59,54 @@ const FormCart = () => {
                 onSubmit={async (values) => {
                     const formData = new FormData();
 
+                    const province = consciouses?.find(
+                        (_) => _.idProvince === values.conscious
+                    )?.name;
+                    const district = districts?.find((_) => _.idDistrict === values.district)?.name;
+                    const products = cart.map((_) => {
+                        return {
+                            _id: _.productId,
+                            name: _.productName,
+                            price: _.price,
+                            quantity: _.quantity,
+                            total: Number(_.quantity) * Number(_.price),
+                            thumbnail: _.thumbnail,
+                            discount: _.discount,
+                        };
+                    });
+
+                    const sumMoney = products.reduce((result, _) => {
+                        return (
+                            result +
+                            (Number(_.quantity) * Number(_.price) * (100 - Number(_.discount))) / 100
+                        );
+                    }, 0);
+
                     formData.append("name", values.name);
-                    formData.append("phoneNumber", values.phoneNumber);
+                    formData.append("phone", values.phone);
                     formData.append("email", values.email);
                     formData.append("address", values.address);
-                    formData.append("conscious", values.conscious);
-                    formData.append("district", values.district);
-                    formData.append("commune", values.commune);
+                    formData.append("conscious", province);
+                    formData.append("district", district);
                     formData.append("note", values.note);
+                    products?.forEach((element) => {
+                        formData.append("products", JSON.stringify(element));
+                    });
+                    formData.append("sumMoney", JSON.stringify(sumMoney));
 
-                    // toast
-                    //     .promise(createProduct, {
-                    //         pending: "Đang chờ xử lý",
-                    //         success: "Tạo mới product thành công",
-                    //         error: {
-                    //             render({ data }) {
-                    //                 const { response } = data;
-                    //                 return `Tạo mới thất bại ${response.data?.message}`;
-                    //             },
-                    //         },
-                    //     })
-                    //     .then(() => {
-                    //         navigate("/admin/products");
-                    //     });
+                    toast
+                        .promise(orderApi.createOrder({ formData }, axiosRefresh), {
+                            pending: "Đang chờ xử lý",
+                            success: "Đặt hàng thành công",
+                            error: {
+                                render({ data }) {
+                                    const { response } = data;
+                                    return `đặt hàng thất bại.`;
+                                },
+                            },
+                        })
+                        .then(() => navigate("/"))
+                        .then(() => dispatch(setDefaultCart()));
                 }}
             >
                 {(formikProps) => (
@@ -87,7 +117,7 @@ const FormCart = () => {
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <FastField
-                                    name='phoneNumber'
+                                    name='phone'
                                     component={InputField}
                                     label='Số điện thoại'
                                 />
@@ -103,7 +133,7 @@ const FormCart = () => {
                             <Grid item xs={12}>
                                 <FastField name='address' component={InputField} label='Địa chỉ' />
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={6}>
                                 <Field
                                     name='conscious'
                                     as='select'
@@ -133,7 +163,7 @@ const FormCart = () => {
                                     </div>
                                 )}
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={6}>
                                 <Field
                                     name='district'
                                     as='select'
@@ -163,30 +193,6 @@ const FormCart = () => {
                                     </div>
                                 )}
                             </Grid>
-                            <Grid item xs={4}>
-                                <Field
-                                    name='commune'
-                                    as='select'
-                                    className='region-field'
-                                    style={{
-                                        borderColor:
-                                            formikProps.errors.conscious &&
-                                            formikProps.touched.conscious
-                                                ? "#d32f2f"
-                                                : "#cccccc",
-                                    }}
-                                >
-                                    <option value=''>Chọn xã/ phường</option>
-                                    {communes?.map((option: any) => (
-                                        <option key={option.idCommune} value={option.idCommune}>
-                                            {option.name}
-                                        </option>
-                                    ))}
-                                </Field>
-                                {formikProps.errors.commune && formikProps.touched.commune && (
-                                    <div className='select-error'>{formikProps.errors.commune}</div>
-                                )}
-                            </Grid>
                             <Grid item xs={12}>
                                 <FastField
                                     name='note'
@@ -196,7 +202,19 @@ const FormCart = () => {
                                 />
                             </Grid>
                         </Grid>
-                        <button>Thanh toán {}</button>
+                        <Button
+                            sx={{
+                                width: "300px",
+                                backgroundColor: "#333",
+                                marginBottom: "32px",
+                                marginTop: "20px",
+                                float: "right",
+                            }}
+                            variant='contained'
+                            type='submit'
+                        >
+                            Thanh toán {}
+                        </Button>
                     </Form>
                 )}
             </Formik>

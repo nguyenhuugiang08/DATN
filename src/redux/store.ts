@@ -11,6 +11,7 @@ import sizeReducer from "./sizeSlice";
 import colorReducer from "./colorSlice";
 import cartReducer from "./cartSlice";
 import regionReducer from "./regionSlice";
+import orderReducer from "./orderSlice";
 import thunk from "redux-thunk";
 
 const rootReducer = combineReducers({
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
     color: colorReducer,
     cart: cartReducer,
     region: regionReducer,
+    order: orderReducer,
 });
 
 const persistConfig = {

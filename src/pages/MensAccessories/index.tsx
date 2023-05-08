@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getProductsByCategoryId, resetProduct } from "redux/productSlice";
 import { HG_RESOURCE } from "base/resource";
 import CardProduct from "components/CardProduct";
-import { Container, Grid, Button, CircularProgress } from "@mui/material";
+import { Container, Grid, CircularProgress, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MultiRangeSlider from "multi-range-slider-react";
 import PriceChangeIcon from "@mui/icons-material/PriceChange";
@@ -16,8 +16,9 @@ import {
     faPercent,
 } from "@fortawesome/free-solid-svg-icons";
 import { Product } from "interfaces/interface";
-import Loading from "components/Loading";
 import { useLocation } from "react-router-dom";
+import Loading from "components/Loading";
+import NotFound from "components/NotFound";
 
 const useStyles = makeStyles({
     filterHeading: {
@@ -50,14 +51,18 @@ const useStyles = makeStyles({
     },
 });
 
-const MensShirt = () => {
+const MensAccessories = () => {
     const dispatch = useAppDispatch();
-    const { categoryProducts, loading, hasMore, isProgress } = useSelector((state: RootState) => state.product);
+    const { categoryProducts, loading, hasMore, isProgress } = useSelector(
+        (state: RootState) => state.product
+    );
     const classes = useStyles();
     const [minValue, setMinValue] = useState(0);
     const [maxValue, setMaxValue] = useState(100);
     const [isFilter, setIsFilter] = useState(false);
-    const [sort, setSort] = useState<number | string>(localStorage.getItem("sort-shirt") || "");
+    const [sort, setSort] = useState<number | string>(
+        localStorage.getItem("sort-accessories") || ""
+    );
     const [page, setPage] = useState<number | string>(1);
     const [more, setMore] = useState(true);
 
@@ -70,11 +75,11 @@ const MensShirt = () => {
     useEffect(() => {
         dispatch(
             getProductsByCategoryId({
-                categoryId: HG_RESOURCE.SHIRT_CATEGORY,
+                categoryId: HG_RESOURCE.MEN_ACCESSORIES,
                 minPrice: minValue * 9990,
                 maxPrice: maxValue * 9990,
-                sortType: sort,
                 page: page,
+                sortType: sort,
             })
         );
     }, [dispatch, sort, page]);
@@ -82,11 +87,11 @@ const MensShirt = () => {
     const handleFilterProduct = () => {
         dispatch(
             getProductsByCategoryId({
-                categoryId: HG_RESOURCE.SHIRT_CATEGORY,
+                categoryId: HG_RESOURCE.MEN_ACCESSORIES,
                 minPrice: minValue * 9990,
                 maxPrice: maxValue * 9990,
-                sortType: sort,
                 page: page,
+                sortType: sort,
             })
         );
         setIsFilter(false);
@@ -95,7 +100,7 @@ const MensShirt = () => {
     const handleSort = (sortType: number | string) => {
         try {
             setSort(sortType);
-            localStorage.setItem("sort-shirt", JSON.stringify(sortType));
+            localStorage.setItem("sort-accessories", JSON.stringify(sortType));
         } catch (error) {
             console.log(error);
         }
@@ -108,7 +113,7 @@ const MensShirt = () => {
 
     return (
         <Container maxWidth='xl' sx={{ marginBottom: "32px" }}>
-            <Grid className={classes.filterHeading}> Áo nam</Grid>
+            <Grid className={classes.filterHeading}> Phụ kiện nam</Grid>
             <Grid
                 sx={{
                     width: "max-content",
@@ -231,8 +236,10 @@ const MensShirt = () => {
             </Grid>
             {loading && more ? (
                 <Loading spacing={2} columns={10} totalColumn={2} />
-            ) : (
+            ) : categoryProducts?.length ? (
                 <CardProduct products={categoryProducts} spacing={2} totalColumn={2} columns={10} />
+            ) : (
+                <NotFound />
             )}
             {hasMore ? (
                 <Grid className={classes.more}>
@@ -248,4 +255,4 @@ const MensShirt = () => {
         </Container>
     );
 };
-export default MensShirt;
+export default MensAccessories;

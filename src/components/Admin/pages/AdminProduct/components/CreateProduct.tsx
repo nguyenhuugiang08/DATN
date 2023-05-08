@@ -176,7 +176,6 @@ const CreateProduct = () => {
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             onSubmit={async (values) => {
-                                console.log(values);
                                 const formData = new FormData();
                                 for (let thumbnail of values.thumbnails) {
                                     const file = await getFileFromUrl(thumbnail.url, "images");

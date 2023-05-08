@@ -199,7 +199,7 @@ const AdminCategory = () => {
         <>
             <Box className={classes.containerBox}>
                 <Typography className={classes.headingAlias}>
-                    products
+                    sản phẩm
                     <Link to='trash-products' className={classes.linkTrash}>
                         Thùng rác
                     </Link>
@@ -218,8 +218,9 @@ const AdminCategory = () => {
                     rows={products}
                     loading={products.length === 0}
                     columns={columns}
-                    pageSize={10}
+                    pageSize={5}
                     rowsPerPageOptions={[10]}
+                    pagination={true}
                     getRowHeight={() => "auto"}
                     autoHeight={true}
                 />

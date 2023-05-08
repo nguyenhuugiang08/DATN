@@ -5,6 +5,7 @@ import authApi from "api/authApi";
 import { RootState, useAppDispatch } from "redux/store";
 import { useSelector } from "react-redux";
 import { loginSuccess } from "redux/authSlice";
+import { toast } from "react-toastify";
 
 export interface MyToken {
     name: string;
@@ -28,26 +29,30 @@ const useAxios = () => {
     });
 
     axiosRefresh.interceptors.request.use(async (config) => {
-        const accessToken = entities?.[0].accessToken;
-        let date = new Date();
-        const decodedToken = jwt_decode<MyToken>(accessToken);
+        if (entities.length) {
+            const accessToken = entities?.[0].accessToken;
+            let date = new Date();
+            const decodedToken = jwt_decode<MyToken>(accessToken);
 
-        if (decodedToken.exp < date.getTime() / 1000) {
-            const data = (await authApi.refreshToken()) as any;
-            const newAccessToken: string = data.accessToken;
+            if (decodedToken.exp < date.getTime() / 1000) {
+                const data = (await authApi.refreshToken()) as any;
+                const newAccessToken: string = data.accessToken;
 
-            const refreshUser = {
-                ...entities?.[0],
-                accessToken: newAccessToken,
-            };
+                const refreshUser = {
+                    ...entities?.[0],
+                    accessToken: newAccessToken,
+                };
 
-            dispatch(loginSuccess(refreshUser));
+                dispatch(loginSuccess(refreshUser));
 
-            if (config.headers) config.headers["token"] = `Bearer ${newAccessToken}`;
-        } else {
-            if (config.headers) config.headers["token"] = `Bearer ${accessToken}`;
+                if (config.headers) config.headers["token"] = `Bearer ${newAccessToken}`;
+            } else {
+                if (config.headers) config.headers["token"] = `Bearer ${accessToken}`;
+            }
+            return config;
+        }else {
+            toast("Bạn cần đăng nhập để tiếp tục thực hiện taho tác.")
         }
-        return config;
     });
 
     axiosRefresh.interceptors.response.use(

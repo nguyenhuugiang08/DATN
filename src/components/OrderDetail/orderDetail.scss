@@ -1,0 +1,264 @@
+.wrapper-order__details {
+    background-color: #F5F5F5;
+    padding-top: 32px;
+}
+
+.filter-order {
+    cursor: pointer;
+    color: #353535;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    padding: 16px 0;
+    font-size: 1.2rem;
+    line-height: 19px;
+    text-align: center;
+    background: #fff;
+    border-bottom: 2px solid rgba(0, 0, 0, .09);
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    transition: color .2s;
+    margin-bottom: 16px;
+}
+
+.filter-order:hover {
+    color: #ee4d2d;
+}
+
+.filter-order--active {
+    color: #ee4d2d;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 2px solid #ee4d2d;
+}
+
+.order__details-items {
+    color: #353535;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    padding: 24px;
+    background: #fff;
+    border-bottom: 2px solid rgba(0, 0, 0, .09);
+    overflow: hidden;
+    transition: color .2s;
+    margin-bottom: 16px;
+}
+
+.order-details__img {
+    height: 150px;
+    width: 100px;
+    margin-right: 12px;
+    border-radius: 6px;
+}
+
+del {
+    opacity: 0.26;
+    color: #353535;
+}
+
+.order-details__price {
+    color: #ee4d2d;
+}
+
+.order-avatar {
+    position: relative;
+    color: #353535;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 0;
+}
+
+.order-avatar::after {
+    position: absolute;
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: #dee2e6;
+    width: 66%;
+    bottom: 0;
+}
+
+.order-avatar:hover {
+    color: #353535;
+}
+
+.account-detail {
+    list-style: none;
+    margin: 24px 0 0 40px;
+}
+
+.account-detail__item i {
+    margin-right: 12px;
+    padding: 12px 0;
+}
+
+.action-rebuy {
+    max-width: max-content;
+    min-width: 100px;
+    background-color: #ee4d2d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    height: 36px;
+    border-radius: 3px;
+    text-decoration: none;
+}
+
+.action-rebuy:hover {
+    color: #fff;
+}
+
+.action-cancel {
+    min-width: 100px;
+    max-width: max-content;
+    background-color: #c30005;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    height: 36px;
+    border-radius: 3px;
+}
+
+.action-confirm {
+    min-width: 100px;
+    max-width: max-content;
+    background-color: #26aa99;
+    padding: 0 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    height: 36px;
+    border-radius: 3px;
+}
+
+.xMDeox {
+    box-sizing: border-box;
+    min-width: 0;
+    background: #fff;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 13%);
+    border-radius: 0.125rem;
+}
+
+.Hvae38 {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 100%;
+}
+
+.GDF4Dt {
+    padding: 0 1.875rem 0.625rem;
+}
+
+.aBgnwW {
+    border-bottom: 0.0625rem solid #efefef;
+    padding: 1.125rem 0;
+}
+
+.QvBZmg {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.5rem;
+    text-transform: capitalize;
+    color: #333;
+}
+
+.ItV\+hT {
+    margin-top: 0.1875rem;
+    font-size: .875rem;
+    line-height: 1.0625rem;
+    color: #555;
+}
+
+.xbLgBv {
+    padding-top: 1.875rem;
+}
+
+.xbLgBv {
+    flex-direction: row;
+}
+
+.cfTCNE {
+    flex: 1;
+    padding-right: 3.125rem;
+}
+
+.es8DWX {
+    margin-bottom: 1.875rem;
+}
+
+._5eQ8vX {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+}
+
+._3cfiVM {
+    width: 20%;
+    text-align: right;
+    color: rgba(85, 85, 85, .8);
+    text-transform: capitalize;
+    overflow: hidden;
+}
+
+.v1Bl9\+ {
+    width: 80%;
+    box-sizing: border-box;
+    padding-left: 1.25rem;
+}
+
+._2MJTPE {
+    align-items: center;
+    display: flex;
+}
+
+.J7g-AJ {
+    font-size: .875rem;
+    color: #333;
+}
+
+.OcJZJm {
+    border: 0;
+    outline: none;
+    background: none;
+    color: #05a;
+    font-size: .8125rem;
+    text-transform: capitalize;
+    text-decoration: underline;
+}
+
+.x40Sa7 {
+    width: 17.5rem;
+    overflow: hidden;
+    border-left: 0.0625rem solid #efefef;
+}
+
+._8LEXgI {
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+}
+
+.snzcsS {
+    height: 6.25rem;
+    width: 6.25rem;
+    margin: 1.25rem 0;
+    position: relative;
+    justify-content: center;
+}
+
+._8LEXgI,
+.snzcsS {
+    align-items: center;
+    display: flex;
+}

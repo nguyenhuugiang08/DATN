@@ -1,7 +1,7 @@
 import { Typography, Grid, Box, Button } from "@mui/material";
 import { formatPrice } from "utilities/formatPrice";
 import { CartItem, Policy, Product } from "interfaces/interface";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { makeStyles } from "@mui/styles";
@@ -192,6 +192,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         quantity: 1,
     });
 
+    useEffect(() => {
+        setInfo({ ...info, size: product?.sizes?.[0], color: product?.colors?.[0] });
+    }, [JSON.stringify(product)]);
+
     const descriptionLines = product?.description?.split("\r\n");
     const { size, color, quantity } = info;
     const classes = useStyles();
@@ -238,6 +242,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                 productName: product.name,
                 quantity: info.quantity,
                 size: info.size as any,
+                discount: product.discount,
             };
 
             dispatch(addItem(item));

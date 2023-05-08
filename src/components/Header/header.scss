@@ -39,6 +39,22 @@
             position: relative;
         }
 
+        &__active {
+            color: var(--primary-color);
+
+            &::after {
+                background: var(--primary-color);
+                bottom: calc(1.25rem - 5px);
+                content: "";
+                height: 3px;
+                left: 1rem;
+                position: absolute;
+                width: calc(100% - 30px) !important;
+                transition: width .2s ease-in-out;
+                bottom: -1px;
+            }
+        }
+
         &__item::after {
             background: var(--primary-color);
             bottom: calc(1.25rem - 5px);
@@ -86,15 +102,16 @@
     right: -4px;
     z-index: 99;
     display: none;
+    overflow: auto;
 }
 
 .cart-icon::before {
     content: "";
     position: absolute;
-    height: 30px;
+    height: 50px;
     width: 200px;
     background-color: transparent;
-    bottom: -22px;
+    bottom: -32px;
     right: -4px;
 }
 

@@ -1,9 +1,13 @@
 import React from "react";
 import { Grid, Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Color, Product } from "interfaces/interface";
+import { CartItem, Color, Product } from "interfaces/interface";
 import { makeStyles } from "@mui/styles";
 import { formatPrice } from "utilities/formatPrice";
+import "./Cardproduct.scss";
+import { useAppDispatch } from "redux/store";
+import { addItem } from "redux/cartSlice";
+import { toast } from "react-toastify";
 
 export interface CardProductProps {
     products: Product[];
@@ -35,6 +39,7 @@ const useStyles = makeStyles({
     productName: {
         fontSize: "14px",
         lineHeight: "1.2em !important",
+        height: "2.4em",
         fontWeight: 400,
         marginBottom: "0.75rem !important",
         display: "block",
@@ -76,17 +81,45 @@ const useStyles = makeStyles({
 
 const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacing, columns }) => {
     const classes = useStyles();
+    const dispatch = useAppDispatch();
+
+    const handleAddToCart = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, product: Product) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        const item: CartItem = {
+            thumbnail: product.thumbnails[0].url,
+            color: product.colors[0] as any,
+            price: product.price,
+            productId: product?._id,
+            productName: product.name,
+            quantity: 1,
+            size: product.sizes[0] as any,
+            discount: product.discount,
+        };
+
+        dispatch(addItem(item));
+        toast("Giỏ hàng đã được cập nhật.");
+    };
+
     return (
         <Grid item container spacing={spacing} columns={columns}>
             {products?.map((product) => (
-                <Grid item xs={totalColumn} key={product._id}>
-                    <Link to={`/product/${product._id}`}>
+                <Grid item xs={totalColumn} key={product?._id}>
+                    <Link
+                        to={`/product/${product?._id}`}
+                        style={{ position: "relative" }}
+                        className='img-product'
+                    >
                         <Box
                             sx={{
-                                backgroundImage: `url(${product.thumbnails?.[0].url})`,
+                                backgroundImage: `url(${product?.thumbnails?.[0].url})`,
                             }}
                             className={classes.thumbnailProduct}
                         ></Box>
+                        <div className='add-to-cart' onClick={(e) => handleAddToCart(e, product)}>
+                            Thêm vào giỏ hàng
+                        </div>
                     </Link>
                     <div
                         style={{
@@ -104,14 +137,24 @@ const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacin
                                 }}
                             >
                                 <div
-                                    style={{ backgroundImage: `url(${color.thumbnail})` }}
+                                    style={{ backgroundImage: `url(${color?.thumbnail})` }}
                                     className={classes.colorThumbnail}
                                 ></div>
                             </Box>
                         ))}
                     </div>
-                    <Link to={`/product/${product._id}`} className={classes.productLink}>
-                        <Typography className={classes.productName}>{product.name}</Typography>
+                    <Link to={`/product/${product?._id}`} className={classes.productLink}>
+                        <Typography
+                            className={classes.productName}
+                            sx={{
+                                WebkitBoxOrient: "vertical",
+                                WebkitLineClamp: "2",
+                                overflow: "hidden",
+                                display: "-webkit-box",
+                            }}
+                        >
+                            {product?.name}
+                        </Typography>
                     </Link>
                     <Box className={classes.productPrices}>
                         <Typography
@@ -119,7 +162,7 @@ const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacin
                             component={"span"}
                             variant={"body2"}
                         >
-                            {formatPrice(product.price)}
+                            {formatPrice(product?.price)}
                             <u>đ</u>
                         </Typography>
                         <Typography
@@ -127,11 +170,12 @@ const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacin
                             component={"span"}
                             variant={"body2"}
                         >
-                            {Number(product.discount) !== 0 && (
+                            {Number(product?.discount) !== 0 && (
                                 <div>
                                     <del>
                                         {formatPrice(
-                                            (Number(product.price) * Number(product.discount)) / 100
+                                            (Number(product?.price) * Number(product?.discount)) /
+                                                100
                                         )}
                                         đ
                                     </del>
@@ -140,7 +184,7 @@ const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacin
                                         component={"span"}
                                         variant={"body2"}
                                     >
-                                        -{product.discount}%
+                                        -{product?.discount}%
                                     </Typography>
                                 </div>
                             )}

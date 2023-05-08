@@ -14,9 +14,9 @@ export interface Product {
     _id: string;
     name: string;
     price: string;
-    sizes: string[];
+    sizes: any[];
     description: string;
-    colors: string[];
+    colors: any[];
     discount: string;
     quantity: string;
     thumbnails: Thumbnail[];
@@ -86,4 +86,30 @@ export interface CartItem {
     price: number | string;
     productName: string;
     productId: string;
+    discount: number | string;
+}
+
+export interface ProductInOrder {
+    _id: string;
+    name: string;
+    price: number;
+    quantity: number;
+    total: number;
+    thumbnail: string;
+    discount: number;
+}
+
+export interface Order {
+    _id: string;
+    userId: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    note: string;
+    products: ProductInOrder[];
+    conscious: string;
+    district: string;
+    sumMoney: number;
+    status: string;
 }

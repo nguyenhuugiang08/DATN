@@ -19,7 +19,6 @@ import TrashCategries from "components/Admin/pages/AdminCategory/components/Tras
 import CreateProduct from "components/Admin/pages/AdminProduct/components/CreateProduct";
 import TrashProduct from "components/Admin/pages/AdminProduct/components/TrashProduct";
 import EditProduct from "components/Admin/pages/AdminProduct/components/EditProduct";
-import Products from "../pages/Products";
 import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 import { useEffect, useState } from "react";
@@ -28,6 +27,11 @@ import CreateNews from "components/Admin/pages/AdminNews/components/CreateNews";
 import TrashNews from "components/Admin/pages/AdminNews/components/TrashNews";
 import MensShirt from "pages/MensShirt";
 import CartAll from "components/Cart/CartAll";
+import MensTrouser from "pages/MensTrouser";
+import ManUnderwear from "pages/ManUnderwear";
+import MensAccessories from "pages/MensAccessories";
+import MensDiscount from "pages/MensDiscount";
+import OrderDetail from "components/OrderDetail";
 
 const RouterApp: React.FC = () => {
     const { search } = useLocation();
@@ -56,8 +60,28 @@ const RouterApp: React.FC = () => {
                     element: <MensShirt />,
                 },
                 {
+                    path: "collection/quan-nam",
+                    element: <MensTrouser />,
+                },
+                {
+                    path: "collection/quan-lot-nam",
+                    element: <ManUnderwear />,
+                },
+                {
+                    path: "collection/phu-kien-nam",
+                    element: <MensAccessories />,
+                },
+                {
+                    path: "collection/discount",
+                    element: <MensDiscount />,
+                },
+                {
                     path: "cart",
                     element: <CartAll />,
+                },
+                {
+                    path: "order-detail",
+                    element: <OrderDetail />,
                 },
             ],
         },
@@ -65,7 +89,6 @@ const RouterApp: React.FC = () => {
             path: "product",
             element: <MainLayout />,
             children: [
-                { path: "/product", element: <Products /> },
                 {
                     path: ":id",
                     element: <ProductDetail />,

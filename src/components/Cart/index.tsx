@@ -30,7 +30,7 @@ const Cart: React.FC<CartItemProps> = ({ cart }) => {
                     <CloseIcon fontSize='small' onClick={() => handleRemoveProduct(cart)} />
                 </div>
                 <div className='cart-color-size'>
-                    {cart.color.colorName} / {cart.size.sizeName}
+                    {cart?.color?.colorName} / {cart?.size?.sizeName}
                 </div>
                 <div className='cart-price'>{formatPrice(cart.price)}đ</div>
                 <div className='cart-quantity'>x{cart.quantity}</div>

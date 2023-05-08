@@ -4,13 +4,32 @@ import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 import Cart from "./index";
 import FormCart from "components/FormCart";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles({
+    line: {
+        position: "relative",
+
+        "&:before": {
+            content: '""',
+            position: "absolute",
+            width: "1px",
+            background: "#ccc",
+            left: "50%",
+            transform: "translateX(-50%)",
+            height: "95%",
+        },
+    },
+});
 
 const CartAll = () => {
     const { cart } = useSelector((state: RootState) => state.cart);
+    const classes = useStyles();
+
     return (
         <Container maxWidth='xl' sx={{ marginTop: "20px" }}>
             <Grid container>
-                <Grid xs={7} pr={4}>
+                <Grid xs={6}>
                     <Grid
                         xs={12}
                         style={{ fontSize: "30px", fontWeight: 700, marginBottom: "32px" }}
@@ -19,16 +38,23 @@ const CartAll = () => {
                     </Grid>
                     <FormCart />
                 </Grid>
+                <Grid xs={1} className={classes.line}></Grid>
                 <Grid xs={5}>
                     <Grid
                         xs={12}
-                        style={{ fontSize: "30px", fontWeight: 700, marginBottom: "32px" }}
+                        style={{
+                            fontSize: "30px",
+                            fontWeight: 700,
+                            marginBottom: "32px",
+                        }}
                     >
                         Giỏ hàng
                     </Grid>
-                    {cart?.map((item: CartItem, index: number) => (
-                        <Cart cart={item} key={index} />
-                    ))}
+                    <div style={{ overflow: "auto", scrollBehavior: "smooth", height: "470px" }}>
+                        {cart?.map((item: CartItem, index: number) => (
+                            <Cart cart={item} key={index} />
+                        ))}
+                    </div>
                 </Grid>
             </Grid>
         </Container>

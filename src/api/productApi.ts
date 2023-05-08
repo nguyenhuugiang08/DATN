@@ -42,13 +42,24 @@ const productApi = {
     getProductsByCategoryId: (
         params: string | undefined,
         minPrice: number | string,
-        maxPrice: number | string
+        maxPrice: number | string,
+        sortType: number | string,
+        page: number | string
     ) => {
-        const url = `/product/category/${params}`;
+        const url = `/product/category/${params}?page=${page}`;
         return axiosClient.get(url, {
             params: {
                 minPrice: minPrice,
                 maxPrice: maxPrice,
+                sortType: sortType,
+            },
+        });
+    },
+    getProductDiscount: (page: number | string, sortType: number | string) => {
+        const url = `/product/discount?page=${page}`;
+        return axiosClient.get(url, {
+            params: {
+                sortType: sortType,
             },
         });
     },

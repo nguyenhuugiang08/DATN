@@ -125,7 +125,7 @@ const CheckboxField: React.FC<CustomInputProps & FieldProps> = ({
                                 onChange={handleChangeCheckboxField}
                                 id={name}
                                 checked={form.values[`${name}`]
-                                    .map((item: any) => item._id)
+                                    .map((item: any) => item?._id)
                                     ?.includes(value["_id"])}
                             />
                         }
