@@ -105,7 +105,7 @@ const CardProduct: React.FC<CardProductProps> = ({ products, totalColumn, spacin
     return (
         <Grid item container spacing={spacing} columns={columns}>
             {products?.map((product) => (
-                <Grid item xs={totalColumn} key={product?._id}>
+                <Grid item xs={totalColumn} key={product?._id} sx={{ marginBottom: "32px" }}>
                     <Link
                         to={`/product/${product?._id}`}
                         style={{ position: "relative" }}

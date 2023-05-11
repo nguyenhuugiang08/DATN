@@ -207,6 +207,16 @@ const RouterApp: React.FC = () => {
                 },
             ],
         },
+        {
+            path: "admin/orders",
+            element: <AdminLayout />,
+            children: [
+                {
+                    path: "/admin/orders",
+                    element: <AdminOrder />,
+                },
+            ],
+        },
     ];
 
     const routing = useRoutes([...pulicRouters, ...privateRouters]);

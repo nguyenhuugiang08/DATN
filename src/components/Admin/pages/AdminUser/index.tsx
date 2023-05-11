@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "redux/store";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Typography, Box } from "@mui/material";
-import { Link } from "react-router-dom";
 import { Thumbnail } from "interfaces/interface";
 import { makeStyles } from "@mui/styles";
 import useAxios from "hooks/useAxios";

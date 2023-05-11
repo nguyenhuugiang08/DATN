@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { formatPrice } from "utilities/formatPrice";
 import { useAppDispatch } from "redux/store";
 import { deleteItem } from "redux/cartSlice";
+import { useEffect } from "react";
 
 interface CartItemProps {
     cart: CartItem;

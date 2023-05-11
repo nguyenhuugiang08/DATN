@@ -1,12 +1,12 @@
-import { Container, Grid, ImageListItem } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Container, Divider, Grid, ImageListItem } from "@mui/material";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./header.scss";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { HG_RESOURCE } from "base/resource";
 import { useSelector } from "react-redux";
-import { RootState } from "redux/store";
+import { RootState, useAppDispatch } from "redux/store";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -14,6 +14,7 @@ import { makeStyles } from "@mui/styles";
 import { CartItem } from "interfaces/interface";
 import Cart from "components/Cart";
 import { useEffect, useState } from "react";
+import { logout } from "redux/authSlice";
 
 const useStyles = makeStyles({
     cart: {
@@ -26,6 +27,7 @@ const useStyles = makeStyles({
         background: "#f2fd5d",
         position: "relative",
         cursor: "pointer",
+        margin: "0 8px 0 16px",
     },
     cartNumber: {
         position: "absolute",
@@ -48,8 +50,10 @@ function Header() {
     const { cart } = useSelector((state: RootState) => state.cart);
     const classes = useStyles();
     const [totalProductInCart, setTotalProductInCart] = useState(0);
+    const { entities } = useSelector((state: RootState) => state.auth);
     const location = useLocation();
-    console.log(location);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         const total = cart?.reduce((result: number, cur: CartItem) => {
@@ -57,6 +61,11 @@ function Header() {
         }, 0);
         setTotalProductInCart(total);
     }, [cart]);
+
+    const logoutUser = () => {
+        dispatch(logout());
+        navigate("/account/login");
+    };
 
     return (
         <>
@@ -80,9 +89,8 @@ function Header() {
                     </div>
                     <div className='header-icon'>
                         <SearchOutlinedIcon />
-                        <PersonOutlineOutlinedIcon />
                         <div className={`${classes.cart} cart-icon`}>
-                            <ShoppingBagOutlinedIcon />
+                            <ShoppingBagOutlinedIcon onClick={() => navigate("/cart")} />
                             <span className={classes.cartNumber}>{totalProductInCart}</span>
                             {cart?.length !== 0 && (
                                 <div className='cart-wrapper'>
@@ -123,6 +131,72 @@ function Header() {
                                 </div>
                             )}
                         </div>
+                        {entities?.length ? (
+                            <div
+                                className='header-user'
+                                style={{
+                                    margin: "0 8px",
+                                    fontSize: "14px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    position: "relative",
+                                }}
+                            >
+                                <PersonOutlineOutlinedIcon />
+                                {entities[0].surname} {entities[0].name}
+                                <div className='header-avatar--hover'>
+                                    <Link to={"/"} className='header-avatar__link pt-2'>
+                                        Tài khoản của tôi
+                                    </Link>
+                                    <Link to='/order-detail' className='header-avatar__link pt-2'>
+                                        Đơn mua
+                                    </Link>
+                                    <div className='header-avatar__link pt-2' onClick={logoutUser}>
+                                        Đăng xuất
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Link
+                                    to={"/account/login"}
+                                    style={{
+                                        textDecoration: "none",
+                                        color: "var(--primary-color)",
+                                        marginLeft: "8px",
+                                        fontSize: "14px",
+                                    }}
+                                >
+                                    Đăng nhập
+                                </Link>{" "}
+                                <div
+                                    style={{
+                                        height: "16px",
+                                        width: "1px",
+                                        background: "#333",
+                                        margin: "0 8px",
+                                    }}
+                                ></div>
+                                <Link
+                                    to={"/account/register"}
+                                    style={{
+                                        textDecoration: "none",
+                                        color: "var(--primary-color)",
+                                        fontSize: "14px",
+                                        marginRight: "8px",
+                                    }}
+                                >
+                                    Đăng ký
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </Grid>
             </Container>

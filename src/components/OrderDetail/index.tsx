@@ -8,6 +8,8 @@ import useAxios from "hooks/useAxios";
 import { formatPrice } from "utilities/formatPrice";
 import { Order } from "interfaces/interface";
 import NotFound from "components/NotFound";
+import orderApi from "api/orderApi";
+import { toast } from "react-toastify";
 
 const OrderDetail = () => {
     const { orders } = useSelector((state: RootState) => state.order);
@@ -28,23 +30,58 @@ const OrderDetail = () => {
         }
     }, [JSON.stringify(orders), filter]);
 
+    const changeStatus = (id: string | undefined, status: string | undefined) => {
+        switch (status) {
+            case "Chờ xác nhận":
+                toast
+                    .promise(orderApi.changeStatusOrder(id, "Đã hủy", axiosRefresh), {
+                        pending: "Đang xử lý.",
+                        success: "Đơn hàng đã được hủy.",
+                        error: {
+                            render({ data }) {
+                                const { response } = data;
+                                return `Cập nhật trạng thái đơn hàng thất bại.`;
+                            },
+                        },
+                    })
+                    .then(() => dispatch(getOrder(axiosRefresh)));
+                break;
+            case "Chờ lấy hàng":
+                toast
+                    .promise(orderApi.changeStatusOrder(id, "Đã hủy", axiosRefresh), {
+                        pending: "Đang xử lý.",
+                        success: "Đơn hàng đã được hủy.",
+                        error: {
+                            render({ data }) {
+                                const { response } = data;
+                                return `Cập nhật trạng thái đơn hàng thất bại.`;
+                            },
+                        },
+                    })
+                    .then(() => dispatch(getOrder(axiosRefresh)));
+                break;
+            case "Đang giao":
+                toast
+                    .promise(orderApi.changeStatusOrder(id, "Đã giao", axiosRefresh), {
+                        pending: "Đang xử lý.",
+                        success: "Đơn hàng giao thành công.",
+                        error: {
+                            render({ data }) {
+                                const { response } = data;
+                                return `Cập nhật trạng thái đơn hàng thất bại.`;
+                            },
+                        },
+                    })
+                    .then(() => dispatch(getOrder(axiosRefresh)));
+                break;
+        }
+    };
+
     return (
         <div className='wrapper-order__details search'>
             <Container maxWidth='xl' className='container order-details-main'>
                 <Grid container>
-                    <Grid item xs={2}>
-                        <a className='header-avatar order-avatar'>
-                            <div className='header-avatar__username'></div>
-                        </a>
-                        <ul className='account-detail'>
-                            <li className='account-detail__item'>
-                                <i className='fa-solid fa-user'></i>Tài khoản của tôi
-                            </li>
-                            <li className='account-detail__item'>
-                                <i className='fa-solid fa-clipboard-list me-3'></i>Đơn mua
-                            </li>
-                        </ul>
-                    </Grid>
+                    <Grid xs={1}></Grid>
                     <Grid item xs={10}>
                         <Grid container>
                             <Grid
@@ -136,7 +173,7 @@ const OrderDetail = () => {
                                                             justifyContent: "space-between",
                                                             alignItems: "center",
                                                             borderBottom: "1px solid #dee2e6",
-                                                            padding: "20px 0",
+                                                            padding: "10px 0",
                                                         }}
                                                     >
                                                         <div
@@ -244,20 +281,30 @@ const OrderDetail = () => {
                                                 >
                                                     {(order.status === "Chờ xác nhận" ||
                                                         order.status === "Chờ lấy hàng") && (
-                                                        <div className='action-cancel '>
+                                                        <div
+                                                            className='action-cancel '
+                                                            onClick={() =>
+                                                                changeStatus(
+                                                                    order._id,
+                                                                    order.status
+                                                                )
+                                                            }
+                                                        >
                                                             Hủy Đơn
                                                         </div>
                                                     )}
                                                     {order.status === "Đang giao" && (
-                                                        <div className='action-confirm'>
+                                                        <div
+                                                            className='action-confirm'
+                                                            onClick={() =>
+                                                                changeStatus(
+                                                                    order._id,
+                                                                    order.status
+                                                                )
+                                                            }
+                                                        >
                                                             Xác Nhận Nhận Hàng
                                                         </div>
-                                                    )}
-                                                    {(order.status === "Đã giao" ||
-                                                        order.status === "Đã hủy") && (
-                                                        <a href='' className='action-rebuy '>
-                                                            Mua Lại
-                                                        </a>
                                                     )}
                                                 </div>
                                             </div>
@@ -271,6 +318,7 @@ const OrderDetail = () => {
                             </Grid>
                         </Grid>
                     </Grid>
+                    <Grid xs={1}></Grid>
                 </Grid>
             </Container>
         </div>

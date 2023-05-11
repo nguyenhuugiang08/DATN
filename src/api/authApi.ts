@@ -31,6 +31,10 @@ const authApi = {
         const url = "/auth";
         return axios.get(url);
     },
+    logout: () => {
+        const url = "/auth/logout";
+        return axiosClient.post(url);
+    },
 };
 
 export default authApi;

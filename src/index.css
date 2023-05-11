@@ -195,3 +195,64 @@ select {
 ::-webkit-scrollbar-thumb:hover {
     background: #888;
 }
+
+.header-avatar--hover {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 42px;
+    right: -20px;
+    transform-origin: 50% top;
+    width: 180px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px -2px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
+    max-height: 600px;
+    background-color: #fff;
+    color: #353535;
+    z-index: 99;
+    padding-top: 20px;
+    animation: showCart ease 0.3s;
+    display: none;
+}
+
+.header-avatar--hover::after {
+    position: absolute;
+    content: "";
+    display: block;
+    border-color: transparent transparent #fff transparent;
+    z-index: 100;
+    border-width: 16px;
+    border-style: solid;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -26px;
+}
+
+.header-avatar__link {
+    text-decoration: none;
+    color: #353535;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+}
+
+.header-avatar__link:hover {
+    background-color: #dddddd;
+    cursor: pointer;
+}
+
+.header-user:hover .header-avatar--hover {
+    display: block;
+}
+
+@keyframes showCart {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

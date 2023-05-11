@@ -112,4 +112,5 @@ export interface Order {
     district: string;
     sumMoney: number;
     status: string;
+    created_At: Date;
 }

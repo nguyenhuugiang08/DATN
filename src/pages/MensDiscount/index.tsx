@@ -73,6 +73,7 @@ const MensDiscount = () => {
 
     const handleSort = (sortType: number | string) => {
         try {
+            setPage(1);
             setSort(sortType);
             localStorage.setItem("sort-trouser", JSON.stringify(sortType));
         } catch (error) {

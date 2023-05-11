@@ -207,6 +207,10 @@ const productSlice = createSlice({
             if (lstItems.length === 0 && state.hasMore) {
                 state.categoryProducts = [...payload];
             }
+
+            if (payload.length === 0) {
+                state.categoryProducts = [];
+            }
         });
         builder.addCase(getProductsByCategoryId.rejected, (state, action) => {
             if (action.payload) {

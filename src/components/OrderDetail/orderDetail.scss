@@ -42,7 +42,7 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    padding: 24px;
+    padding: 10px 24px;
     background: #fff;
     border-bottom: 2px solid rgba(0, 0, 0, .09);
     overflow: hidden;
@@ -51,8 +51,8 @@
 }
 
 .order-details__img {
-    height: 150px;
-    width: 100px;
+    height: 120px;
+    width: 80px;
     margin-right: 12px;
     border-radius: 6px;
 }

@@ -18,6 +18,7 @@ import {
 import { Product } from "interfaces/interface";
 import Loading from "components/Loading";
 import { useLocation } from "react-router-dom";
+import NotFound from "components/NotFound";
 
 const useStyles = makeStyles({
     filterHeading: {
@@ -52,7 +53,9 @@ const useStyles = makeStyles({
 
 const MensShirt = () => {
     const dispatch = useAppDispatch();
-    const { categoryProducts, loading, hasMore, isProgress } = useSelector((state: RootState) => state.product);
+    const { categoryProducts, loading, hasMore, isProgress } = useSelector(
+        (state: RootState) => state.product
+    );
     const classes = useStyles();
     const [minValue, setMinValue] = useState(0);
     const [maxValue, setMaxValue] = useState(100);
@@ -80,6 +83,7 @@ const MensShirt = () => {
     }, [dispatch, sort, page]);
 
     const handleFilterProduct = () => {
+        setPage(1);
         dispatch(
             getProductsByCategoryId({
                 categoryId: HG_RESOURCE.SHIRT_CATEGORY,
@@ -94,6 +98,7 @@ const MensShirt = () => {
 
     const handleSort = (sortType: number | string) => {
         try {
+            setPage(1);
             setSort(sortType);
             localStorage.setItem("sort-shirt", JSON.stringify(sortType));
         } catch (error) {
@@ -231,8 +236,10 @@ const MensShirt = () => {
             </Grid>
             {loading && more ? (
                 <Loading spacing={2} columns={10} totalColumn={2} />
-            ) : (
+            ) : categoryProducts?.length ? (
                 <CardProduct products={categoryProducts} spacing={2} totalColumn={2} columns={10} />
+            ) : (
+                <NotFound />
             )}
             {hasMore ? (
                 <Grid className={classes.more}>

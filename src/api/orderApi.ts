@@ -17,8 +17,12 @@ const orderApi = {
     createOrder: (data: DataCreateOrder, axios: AxiosInstance) => {
         return axios.post(`${baseUrl}/create`, data.formData);
     },
-    changeStatusOrder: (id: string | undefined, newStatus: string | undefined) => {
-        return axiosClient.put(`${baseUrl}/change-status/${id}`, newStatus);
+    changeStatusOrder: (
+        id: string | undefined,
+        newStatus: string | undefined,
+        axios: AxiosInstance
+    ) => {
+        return axios.put(`${baseUrl}/change-status/${id}`, { status: newStatus });
     },
 };
 

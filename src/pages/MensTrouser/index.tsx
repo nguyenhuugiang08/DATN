@@ -82,6 +82,7 @@ const MensTrouser = () => {
     }, [dispatch, sort, page]);
 
     const handleFilterProduct = () => {
+        setPage(1);
         dispatch(
             getProductsByCategoryId({
                 categoryId: HG_RESOURCE.TROUSERS_CATEGORY,
@@ -96,6 +97,7 @@ const MensTrouser = () => {
 
     const handleSort = (sortType: number | string) => {
         try {
+            setPage(1);
             setSort(sortType);
             localStorage.setItem("sort-trouser", JSON.stringify(sortType));
         } catch (error) {

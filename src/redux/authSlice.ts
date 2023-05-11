@@ -4,6 +4,7 @@ import type { AxiosError, AxiosInstance } from "axios";
 import authApi from "../api/authApi";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { redirect } from "react-router-dom";
 
 interface ValidationErrors {
     errorMessage: string;
@@ -54,6 +55,18 @@ export const getUsers = createAsyncThunk<User[], AxiosInstance>(
     }
 );
 
+export const logout = createAsyncThunk("auth/logout", async () => {
+    try {
+        await authApi.logout().then(() => redirect("/account/login"));
+    } catch (err) {
+        let error: AxiosError<ValidationErrors> = err as AxiosError<ValidationErrors>;
+        if (!error.response) {
+            throw err;
+        }
+        return error.response.data;
+    }
+});
+
 interface UsersState {
     error: string | null | undefined;
     entities: User[];
@@ -90,6 +103,17 @@ const authSlice = createSlice({
             state.users = [...payload];
         });
         builder.addCase(getUsers.rejected, (state, action) => {
+            if (action.payload) {
+                state.error = "Have got an exception!";
+            } else {
+                state.error = action.error.message;
+            }
+        });
+
+        builder.addCase(logout.fulfilled, (state) => {
+            state.entities = [];
+        });
+        builder.addCase(logout.rejected, (state, action) => {
             if (action.payload) {
                 state.error = "Have got an exception!";
             } else {

@@ -83,6 +83,7 @@ const ManUnderwear = () => {
     }, [dispatch, sort, page]);
 
     const handleFilterProduct = () => {
+        setPage(1);
         dispatch(
             getProductsByCategoryId({
                 categoryId: HG_RESOURCE.MAN_UNDERWEAR,
@@ -97,6 +98,7 @@ const ManUnderwear = () => {
 
     const handleSort = (sortType: number | string) => {
         try {
+            setPage(1);
             setSort(sortType);
             localStorage.setItem("sort-underwear", JSON.stringify(sortType));
         } catch (error) {

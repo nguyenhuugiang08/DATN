@@ -5,6 +5,8 @@ import { RootState } from "redux/store";
 import Cart from "./index";
 import FormCart from "components/FormCart";
 import { makeStyles } from "@mui/styles";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles({
     line: {
@@ -25,6 +27,13 @@ const useStyles = makeStyles({
 const CartAll = () => {
     const { cart } = useSelector((state: RootState) => state.cart);
     const classes = useStyles();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (cart?.length === 0) {
+            navigate(-1);
+        }
+    }, []);
 
     return (
         <Container maxWidth='xl' sx={{ marginTop: "20px" }}>
